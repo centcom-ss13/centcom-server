@@ -1,20 +1,25 @@
 import Hapi from 'hapi';
+import config from 'config';
 import * as controllers from './controller';
 
-async function init () {
-  const server = Hapi.server({
-    port: 3000,
-    host: 'localhost',
-  });
-
-  Object.values(controllers).forEach(controller => controller.forEach(route => registerRoute(server, route)));
-
-  await server.start();
+function registerRoute(server, route) {
+  console.log(`Registering Route: ${route.method} ${route.path}`);
+  server.route(route);
 }
 
-function registerRoute(server, route) {
-  console.log('registering route', route);
-  server.route(route);
+function addControllers(server) {
+  Object.values(controllers).forEach(controller => controller.forEach(route => registerRoute(server, route)));
+}
+
+async function init() {
+  const server = Hapi.server({
+    port: config.get('apiPort'),
+    host: config.get('apiHost'),
+  });
+
+  addControllers(server);
+
+  await server.start();
 }
 
 process.on('unhandledRejection', (err) => {

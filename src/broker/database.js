@@ -5,10 +5,13 @@ const buildQuery = (statements = []) => statements.join('\n');
 
 class DB {
   constructor() {
+    const user = config.get('databaseUsername') || process.env.centcom_db_user;
+    const password = config.get('databasePassword') || process.env.centcom_db_password;
+
     this.connection = mysql.createConnection({
       host     : config.get('databaseUrl'),
-      user     : config.get('databaseUsername'),
-      password : config.get('databasePassword'),
+      user,
+      password,
       port     : config.get('databasePort'),
       multipleStatements: true,
     });
@@ -17,7 +20,9 @@ class DB {
   query(query, { omitUseDatabase = false } = {}) {
     return new Promise((resolve, reject) => {
       const finalQuery = omitUseDatabase ? query.toString() : `USE centcom;${query.toString()}`;
-      console.log(finalQuery);
+      if(config.get('debug')) {
+        console.log(`Executing query: "${finalQuery}"`);
+      }
       this.connection.query(finalQuery, (err, results, fields) => {
         if(err) {
           reject(err);

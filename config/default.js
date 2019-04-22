@@ -1,6 +1,9 @@
 module.exports = {
   databaseUrl: 'localhost',
+  databasePort: 3306,
   databaseUsername: 'root',
   databasePassword: 'imapassword',
-  databasePort: 3306,
+  debug: true,
+  apiHost: 'localhost',
+  apiPort: 3000,
 };
