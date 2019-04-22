@@ -15,6 +15,13 @@ async function init() {
   const server = Hapi.server({
     port: config.get('apiPort'),
     host: config.get('apiHost'),
+    routes: {
+      cors: {
+        origin: ["*"],
+        headers: ["Accept", "Content-Type"],
+        additionalHeaders: ["X-Requested-With"],
+      },
+    },
   });
 
   addControllers(server);

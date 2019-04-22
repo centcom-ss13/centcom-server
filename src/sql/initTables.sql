@@ -4,7 +4,11 @@ USE centcom;
 
 CREATE TABLE servers (name VARCHAR(50), url VARCHAR(100), port INT, access_level VARCHAR(20));
 
-CREATE TABLE config (cfg_key VARCHAR(50) UNIQUE NOT NULL, cfg_value VARCHAR(200) NOT NULL);
+CREATE TABLE config (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    cfg_key VARCHAR(50) UNIQUE NOT NULL,
+    cfg_value VARCHAR(200) NOT NULL
+);
 
 CREATE TABLE book_categories (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
