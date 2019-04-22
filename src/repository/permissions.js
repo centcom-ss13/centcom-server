@@ -8,9 +8,9 @@ async function getPermissions() {
   const query = squel.select()
   .from('permissions');
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function createPermission(name, description) {

@@ -8,9 +8,9 @@ async function getGroups() {
   const query = squel.select()
   .from('user_groups');
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function getGroup(id) {
@@ -18,9 +18,9 @@ async function getGroup(id) {
   .from('user_groups')
   .where('id = ?', id);
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1][0];
+  return results[0];
 }
 
 async function getGroupsForUser(userId) {
@@ -32,9 +32,9 @@ async function getGroupsForUser(userId) {
   .left_join('user_groups', null, 'user_groups.id = user_group_members.group_id')
   .where('user_group_members.user_id = ?', userId);
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function addUserToGroup(user_id, group_id) {

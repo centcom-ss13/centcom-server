@@ -8,9 +8,9 @@ async function getBookCategories() {
   const query = squel.select()
   .from('book_categories');
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function createBookCategory(name, color) {

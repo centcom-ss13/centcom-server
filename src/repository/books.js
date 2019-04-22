@@ -14,9 +14,9 @@ async function getBooks() {
   .from('books')
   .left_join('book_categories', null, "books.category_id = book_categories.id");
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function createBook(title, content, category_id) {

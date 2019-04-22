@@ -13,9 +13,9 @@ async function getPermissionsForUser(user_id) {
   .left_join('permissions', null, 'user_permissions.permission_id = permissions.id')
   .where('user_permissions.user_id = ?', user_id);
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function addPermissionToUser(user_id, permission_id) {

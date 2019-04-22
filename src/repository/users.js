@@ -8,9 +8,9 @@ async function getUsers() {
   const query = squel.select()
   .from('users');
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function getUser(id) {
@@ -18,9 +18,9 @@ async function getUser(id) {
   .from('users')
   .where(`id = ?`, id);
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1][0];
+  return results[0];
 }
 
 async function createUser(nickname, email, byond_key) {

@@ -13,9 +13,9 @@ async function getPermissionsForGroup(group_id) {
   .left_join('permissions', null, 'user_group_permissions.permission_id = permissions.id')
   .where('user_group_permissions.group_id = ?', group_id);
 
-  const results = await db.query(query);
+  const [metadata, results] = await db.query(query);
 
-  return results[1];
+  return results;
 }
 
 async function addPermissionToGroup(group_id, permission_id) {
