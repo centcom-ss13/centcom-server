@@ -69,13 +69,11 @@ async function deleteGroup(id) {
 }
 
 async function createGroup({ name, description, permissions = [] }) {
-  const groupEditFuture = GroupRepository.createGroup(name, description);
-  await groupEditFuture;
+  const group = await GroupRepository.createGroup(name, description);
 
-  const permissionAddFutures = permissions.map(permissionId => GroupPermissionRepository.addPermissionToGroup(id, permissionId));
+  const permissionAddFutures = permissions.map(permissionId => GroupPermissionRepository.addPermissionToGroup(group.id, permissionId));
 
   const results = Promise.all([
-    groupEditFuture,
     ...permissionAddFutures,
   ]);
 
