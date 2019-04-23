@@ -1,26 +1,75 @@
 import UserRepository from '../repository/users';
 import GroupRepository from '../repository/userGroups';
-import PermissionRepository from '../repository/userPermissions';
+import UserPermissionRepository from '../repository/userPermissions';
+import PermissionRepository from '../repository/permissions';
+import GroupPermissionRepository from '../repository/userGroupPermissions';
 
 async function getUser(id) {
-  return await UserRepository.getUser(id);
+  const [
+    user,
+    permissions,
+    groups
+  ] = await Promise.all([
+    UserRepository.getUser(id),
+    UserPermissionRepository.getPermissionsForUser(id),
+    GroupRepository.getGroupsForUser(id)
+  ]);
+
+  return {
+    ...user,
+    permissions,
+    groups,
+  };
 }
 
 async function getUsers() {
-  return await UserRepository.getUsers();
+  const [
+    users,
+    userPermissions,
+    groupMembers,
+    groupPermissions,
+  ] = await Promise.all([
+    UserRepository.getUsers(),
+    UserPermissionRepository.getAllUserPermissions(),
+    GroupRepository.getAllGroupMemberships(),
+    GroupPermissionRepository.getAllGroupPermissions(),
+  ]);
+
+  return users.map(user => {
+    const currentUserPermissions = userPermissions
+    .filter(({ user_id }) => user_id === user.id)
+    .map(({ permission_id }) => permission_id);
+
+    const currentUserGroups = groupMembers
+    .filter(({ user_id }) => user_id === user.id)
+    .map(({ group_id }) => group_id);
+
+    const currentUserGroupPermissions = Array.from(new Set([
+      ...groupPermissions
+      .filter(({ group_id }) => currentUserGroups.includes(group_id))
+      .map(({ permission_id }) => permission_id),
+    ]));
+
+    return {
+      ...user,
+      permissions: currentUserPermissions,
+      groupPermissions: currentUserGroupPermissions,
+      groups: currentUserGroups,
+    };
+  });
 }
 
 async function editUser({ id, nickname, email, byond_key, permissions = [], groups = [] }) {
   const userEditFuture = UserRepository.editUser(id, nickname, email, byond_key);
 
-  const userCurrentPermissions = await PermissionRepository.getPermissionsForUser(id);
+  const userCurrentPermissions = await UserPermissionRepository.getPermissionsForUser(id);
   const userCurrentPermissionIds = userCurrentPermissions.map(({ id }) => id);
 
   const newUserPermissions = permissions.filter(permissionId => !userCurrentPermissionIds.includes(permissionId));
   const removedUserPermissions = userCurrentPermissionIds.filter(permissionId => !permissions.includes(permissionId));
 
-  const permissionAddFutures = newUserPermissions.map(permissionId => PermissionRepository.addPermissionToUser(id, permissionId));
-  const permissionRemoveFutures = removedUserPermissions.map(permissionId => PermissionRepository.removePermissionFromUser(id, permissionId));
+  const permissionAddFutures = newUserPermissions.map(permissionId => UserPermissionRepository.addPermissionToUser(id, permissionId));
+  const permissionRemoveFutures = removedUserPermissions.map(permissionId => UserPermissionRepository.removePermissionFromUser(id, permissionId));
 
   const userCurrentGroups = await GroupRepository.getGroupsForUser(id);
   const userCurrentGroupIds = userCurrentGroups.map(({ id }) => id);

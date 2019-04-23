@@ -4,6 +4,15 @@ import {DB} from "../broker/database";
 
 const db = new DB();
 
+async function getAllGroupMemberships() {
+  const query = squel.select()
+  .from('user_group_members');
+
+  const [metadata, results] = await db.query(query);
+
+  return results;
+}
+
 async function getGroups() {
   const query = squel.select()
   .from('user_groups');
@@ -91,5 +100,6 @@ export default {
   createGroup,
   deleteGroup,
   editGroup,
+  getAllGroupMemberships,
 };
 

@@ -4,6 +4,15 @@ import {DB} from "../broker/database";
 
 const db = new DB();
 
+async function getAllUserPermissions() {
+  const query = squel.select()
+  .from('user_permissions');
+
+  const [metadata, results] = await db.query(query);
+
+  return results;
+}
+
 async function getPermissionsForUser(user_id) {
   const query = squel.select()
   .field('permissions.id', 'id')
@@ -40,5 +49,6 @@ export default {
   getPermissionsForUser,
   addPermissionToUser,
   removePermissionFromUser,
+  getAllUserPermissions,
 };
 

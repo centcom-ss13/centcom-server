@@ -1,12 +1,42 @@
 import GroupRepository from '../repository/userGroups';
 import GroupPermissionRepository from '../repository/userGroupPermissions';
+import UserPermissionRepository from "../repository/userPermissions";
+import UserRepository from "../repository/users";
 
 async function getGroup(id) {
-  return await GroupRepository.getGroup(id);
+  const [
+    group,
+    permissions,
+  ] = await Promise.all([
+    GroupRepository.getGroup(id),
+    GroupPermissionRepository.getPermissionsForGroup(id),
+  ]);
+
+  return {
+    ...group,
+    permissions,
+  };
 }
 
 async function getGroups() {
-  return await GroupRepository.getGroups();
+  const [
+    groups,
+    groupPermissions,
+  ] = await Promise.all([
+    GroupRepository.getGroups(),
+    GroupPermissionRepository.getAllGroupPermissions(),
+  ]);
+
+  return groups.map(group => {
+    const currentGroupPermissions = groupPermissions
+    .filter(({ group_id }) => group_id === group.id)
+    .map(({ permission_id }) => permission_id);
+
+    return {
+      ...group,
+      permissions: currentGroupPermissions,
+    };
+  });
 }
 
 async function getGroupsForUser(user_id) {
