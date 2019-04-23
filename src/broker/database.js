@@ -8,7 +8,8 @@ class DB {
     const user = config.get('databaseUsername') || process.env.centcom_db_user;
     const password = config.get('databasePassword') || process.env.centcom_db_password;
 
-    this.connection = mysql.createConnection({
+    this.connection = mysql.createPool({
+      connectionLimit : 20,
       host     : config.get('databaseUrl'),
       user,
       password,
@@ -23,6 +24,7 @@ class DB {
       if(config.get('debug')) {
         console.log(`Executing query: "${finalQuery}"`);
       }
+
       this.connection.query(finalQuery, (err, results, fields) => {
         if(err) {
           reject(err);
