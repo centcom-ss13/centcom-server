@@ -22,6 +22,7 @@ async function init() {
         additionalHeaders: ["X-Requested-With"],
       },
     },
+    ...(config.get('debug') && { debug: { request: ['error'] } }),
   });
 
   addControllers(server);
