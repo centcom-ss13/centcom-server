@@ -47,14 +47,12 @@ async function deleteUser(id) {
 }
 
 async function createUser({ nickname, email, byond_key, permissions = [], groups = [] }) {
-  const userCreateFuture = UserRepository.createUser(nickname, email, byond_key);
-  await userCreateFuture;
+  const user = await UserRepository.createUser(nickname, email, byond_key);
 
-  const permissionAddFutures = permissions.map(permissionId => PermissionRepository.addPermissionToUser(id, permissionId));
-  const groupAddFutures = groups.map(groupId => GroupRepository.addUserToGroup(id, groupId));
+  const permissionAddFutures = permissions.map(permissionId => PermissionRepository.addPermissionToUser(user.id, permissionId));
+  const groupAddFutures = groups.map(groupId => GroupRepository.addUserToGroup(user.id, groupId));
 
   const results = Promise.all([
-    userCreateFuture,
     ...permissionAddFutures,
     ...groupAddFutures,
   ]);

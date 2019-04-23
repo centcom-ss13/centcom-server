@@ -24,13 +24,21 @@ async function getUser(id) {
 }
 
 async function createUser(nickname, email, byond_key) {
-  const query = squel.insert()
+  const createQuery = squel.insert()
   .into('users')
   .set('nickname', nickname)
   .set('email', email)
   .set('byond_key', byond_key);
 
-  return await db.query(query);
+  await db.query(createQuery);
+
+  const getCreatedObjectQuery = squel.select()
+  .from('users')
+  .where('id = LAST_INSERT_ID()');
+
+  const [metadata, results] = await db.query(getCreatedObjectQuery);
+
+  return results[0];
 }
 
 async function deleteUser(id) {
