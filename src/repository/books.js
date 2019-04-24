@@ -6,22 +6,20 @@ const db = new DB();
 
 async function getBooks() {
   const query = squel.select()
-  .field('books.id')
-  .field('books.title')
-  .field('books.content')
-  .field('books.category_id')
-  .field('book_categories.name', 'category_name')
-  .from('books')
-  .left_join('book_categories', null, "books.category_id = book_categories.id");
+  .field('book.id')
+  .field('book.title')
+  .field('book.content')
+  .field('book.category_id')
+  .field('book_category.name', 'category_name')
+  .from('book')
+  .left_join('book_category', null, "book.category_id = book_category.id");
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function createBook(title, content, category_id) {
   const query = squel.insert()
-  .into('books')
+  .into('book')
   .set('title', title)
   .set('content', content)
   .set('category_id', category_id);
@@ -31,7 +29,7 @@ async function createBook(title, content, category_id) {
 
 async function deleteBook(id) {
   const query = squel.delete()
-  .from('books')
+  .from('book')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -39,7 +37,7 @@ async function deleteBook(id) {
 
 async function editBook(id, title, content, category_id) {
   const query = squel.update()
-  .table('books')
+  .table('book')
   .set('title', title)
   .set('content', content)
   .set('category_id', category_id)

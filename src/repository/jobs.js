@@ -6,16 +6,14 @@ const db = new DB();
 
 async function getJobs() {
   const query = squel.select()
-  .from('jobs');
+  .from('job');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function createJob(title, aggregate) {
   const query = squel.insert()
-  .into('jobs')
+  .into('job')
   .set('title', title)
   .set('aggregate', aggregate);
 
@@ -24,7 +22,7 @@ async function createJob(title, aggregate) {
 
 async function deleteJob(id) {
   const query = squel.delete()
-  .from('jobs')
+  .from('job')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -32,7 +30,7 @@ async function deleteJob(id) {
 
 async function editJob(id, title, aggregate) {
   const query = squel.update()
-  .table('jobs')
+  .table('job')
   .set('title', title)
   .set('aggregate', aggregate)
   .where('id = ?', id);

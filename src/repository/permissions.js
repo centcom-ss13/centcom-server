@@ -6,16 +6,14 @@ const db = new DB();
 
 async function getPermissions() {
   const query = squel.select()
-  .from('permissions');
+  .from('permission');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function createPermission(name, description) {
   const query = squel.insert()
-  .into('permissions')
+  .into('permission')
   .set('name', name)
   .set('description', description);
 
@@ -24,7 +22,7 @@ async function createPermission(name, description) {
 
 async function deletePermission(id) {
   const query = squel.delete()
-  .from('permissions')
+  .from('permission')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -32,7 +30,7 @@ async function deletePermission(id) {
 
 async function editPermission(id, name, description) {
   const query = squel.update()
-  .table('permissions')
+  .table('permission')
   .set('name', name)
   .set('description', description)
   .where('id = ?', id);

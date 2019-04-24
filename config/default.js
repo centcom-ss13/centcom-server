@@ -6,4 +6,5 @@ module.exports = {
   debug: true,
   apiHost: 'localhost',
   apiPort: 3000,
+  databaseDb: 'centcom',
 };

@@ -6,16 +6,14 @@ const db = new DB();
 
 async function getBans() {
   const query = squel.select()
-  .from('bans');
+  .from('ban');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function createBan(byond_key, reason, expiration_date, ip, computer_id, issuer_id) {
   const query = squel.insert()
-  .into('bans')
+  .into('ban')
   .set('byond_key', byond_key)
   .set('reason', reason)
   .set('expiration_date', expiration_date)
@@ -28,7 +26,7 @@ async function createBan(byond_key, reason, expiration_date, ip, computer_id, is
 
 async function deleteBan(id) {
   const query = squel.delete()
-  .from('bans')
+  .from('ban')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -36,7 +34,7 @@ async function deleteBan(id) {
 
 async function editBan(id, byond_key, reason, expiration_date, ip, computer_id) {
   const query = squel.update()
-  .table('bans')
+  .table('ban')
   .set('byond_key', byond_key)
   .set('reason', reason)
   .set('expiration_date', expiration_date)

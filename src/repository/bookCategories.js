@@ -6,16 +6,14 @@ const db = new DB();
 
 async function getBookCategories() {
   const query = squel.select()
-  .from('book_categories');
+  .from('book_category');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function createBookCategory(name, color) {
   const query = squel.insert()
-  .into('book_categories')
+  .into('book_category')
   .set('name', name)
   .set('color', color);
 
@@ -24,7 +22,7 @@ async function createBookCategory(name, color) {
 
 async function deleteBookCategory(id) {
   const query = squel.delete()
-  .from('book_categories')
+  .from('book_category')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -32,7 +30,7 @@ async function deleteBookCategory(id) {
 
 async function editBookCategory(id, name, color) {
   const query = squel.update()
-  .table('book_categories')
+  .table('book_category')
   .set('name', name)
   .set('color', color)
   .where('id = ?', id);

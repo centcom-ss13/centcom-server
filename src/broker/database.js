@@ -15,17 +15,17 @@ class DB {
       password,
       port     : config.get('databasePort'),
       multipleStatements: true,
+      database : config.get('databaseDb'),
     });
   }
 
-  query(query, { omitUseDatabase = false } = {}) {
+  query(query) {
     return new Promise((resolve, reject) => {
-      const finalQuery = omitUseDatabase ? query.toString() : `USE centcom;${query.toString()}`;
       if(config.get('debug')) {
-        console.log(`Executing query: "${finalQuery}"`);
+        console.log(`Executing query: "${query.toString()}"`);
       }
 
-      this.connection.query(finalQuery, (err, results, fields) => {
+      this.connection.query(query.toString(), (err, results, fields) => {
         if(err) {
           reject(err);
         } else {

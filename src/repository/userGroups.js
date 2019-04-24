@@ -6,49 +6,43 @@ const db = new DB();
 
 async function getAllGroupMemberships() {
   const query = squel.select()
-  .from('user_group_members');
+  .from('user_group_member');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function getGroups() {
   const query = squel.select()
-  .from('user_groups');
+  .from('user_group');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function getGroup(id) {
   const query = squel.select()
-  .from('user_groups')
+  .from('user_group')
   .where('id = ?', id);
 
-  const [metadata, results] = await db.query(query);
+  const results = await db.query(query);
 
   return results[0];
 }
 
 async function getGroupsForUser(userId) {
   const query = squel.select()
-  .field('user_groups.id', 'id')
-  .field('user_groups.name', 'name')
-  .field('user_groups.description', 'description')
-  .from('user_group_members')
-  .left_join('user_groups', null, 'user_groups.id = user_group_members.group_id')
-  .where('user_group_members.user_id = ?', userId);
+  .field('user_group.id', 'id')
+  .field('user_group.name', 'name')
+  .field('user_group.description', 'description')
+  .from('user_group_member')
+  .left_join('user_group', null, 'user_group.id = user_group_member.group_id')
+  .where('user_group_member.user_id = ?', userId);
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function addUserToGroup(user_id, group_id) {
   const query = squel.insert()
-  .into('user_group_members')
+  .into('user_group_member')
   .set('user_id', user_id)
   .set('group_id', group_id);
 
@@ -57,7 +51,7 @@ async function addUserToGroup(user_id, group_id) {
 
 async function removeUserFromGroup(user_id, group_id) {
   const query = squel.delete()
-  .from('user_group_members')
+  .from('user_group_member')
   .where('user_id = ?', user_id)
   .where('group_id = ?', group_id);
 
@@ -66,24 +60,24 @@ async function removeUserFromGroup(user_id, group_id) {
 
 async function createGroup(name, description) {
   const createQuery = squel.insert()
-  .into('user_groups')
+  .into('user_group')
   .set('name', name)
   .set('description', description);
 
   await db.query(createQuery);
 
   const getCreatedObjectQuery = squel.select()
-  .from('user_groups')
+  .from('user_group')
   .where('id = LAST_INSERT_ID()');
 
-  const [metadata, results] = await db.query(getCreatedObjectQuery);
+  const results = await db.query(getCreatedObjectQuery);
 
   return results[0];
 }
 
 async function deleteGroup(id) {
   const query = squel.delete()
-  .from('user_groups')
+  .from('user_group')
   .where('id = ?', id);
 
   return await db.query(query);
@@ -91,7 +85,7 @@ async function deleteGroup(id) {
 
 async function editGroup(id, name, description) {
   const query = squel.update()
-  .table('user_groups')
+  .table('user_group')
   .set('name', name)
   .set('description', description)
   .where('id = ?', id);

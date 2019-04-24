@@ -1,0 +1,16 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "host": "localhost",
+    "user": "root",
+    "password": "imapassword",
+    "database": "centcom"
+  },
+  "qa": {
+    "driver": "mysql",
+    "host": {"ENV": "CENTCOM_DB_HOST"},
+    "user": {"ENV": "CENTCOM_DB_USER"},
+    "password": {"ENV": "CENTCOM_DB_PASSWORD"},
+    "database": "centcom"
+  }
+}

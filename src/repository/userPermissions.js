@@ -6,30 +6,26 @@ const db = new DB();
 
 async function getAllUserPermissions() {
   const query = squel.select()
-  .from('user_permissions');
+  .from('user_permission');
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function getPermissionsForUser(user_id) {
   const query = squel.select()
-  .field('permissions.id', 'id')
-  .field('permissions.name', 'name')
-  .field('permissions.description', 'description')
-  .from('user_permissions')
-  .left_join('permissions', null, 'user_permissions.permission_id = permissions.id')
-  .where('user_permissions.user_id = ?', user_id);
+  .field('permission.id', 'id')
+  .field('permission.name', 'name')
+  .field('permission.description', 'description')
+  .from('user_permission')
+  .left_join('permission', null, 'user_permission.permission_id = permission.id')
+  .where('user_permission.user_id = ?', user_id);
 
-  const [metadata, results] = await db.query(query);
-
-  return results;
+  return await db.query(query);
 }
 
 async function addPermissionToUser(user_id, permission_id) {
   const query = squel.insert()
-  .into('user_permissions')
+  .into('user_permission')
   .set('user_id', user_id)
   .set('permission_id', permission_id);
 
@@ -38,7 +34,7 @@ async function addPermissionToUser(user_id, permission_id) {
 
 async function removePermissionFromUser(user_id, permission_id) {
   const query = squel.delete()
-  .from('user_permissions')
+  .from('user_permission')
   .where('user_id = ?', user_id)
   .where('permission_id = ?', permission_id);
 
