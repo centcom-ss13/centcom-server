@@ -66,3 +66,44 @@ CREATE TABLE user_group_permissions (
     FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE
 );
+
+CREATE TABLE jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    aggregate BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE bans (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    byond_key VARCHAR(100) NOT NULL,
+    reason VARCHAR(1000) NOT NULL,
+    expiration_date DATETIME,
+    ip VARCHAR(15),
+    computer_id VARCHAR(100),
+    issuer_id INT,
+    FOREIGN KEY (issuer_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE job_bans (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    job_id INT NOT NULL,
+    ban_id INT NOT NULL,
+    FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (ban_id) REFERENCES bans(id) ON DELETE CASCADE
+);
+
+CREATE TABLE theme_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    theme_name VARCHAR(100) UNIQUE NOT NULL,
+    description VARCHAR(300),
+    default_value VARCHAR(1000)
+);
+
+CREATE TABLE user_theme_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    user_id INT NOT NULL,
+    theme_id INT NOT NULL,
+    theme_value VARCHAR(1000) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (theme_id) REFERENCES theme_settings(id) ON DELETE CASCADE
+);

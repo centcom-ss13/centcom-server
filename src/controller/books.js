@@ -74,8 +74,6 @@ const createBookCategory = {
   },
 };
 
-
-
 export default [
   getBooks,
   createBook,
