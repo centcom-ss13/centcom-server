@@ -9,7 +9,9 @@
   "scripts": {
     "test": "mocha",
     "build": "webpack",
-    "start": "node ./dist/bundle.js"
+    "start": "db:migrate && node ./dist/bundle.js",
+    "db:migrate": "npx db-migrate up",
+    "db:create": "npx db-migrate create"
   },
   "author": "",
   "license": "ISC",
