@@ -1,5 +1,5 @@
 {
-  "name": "centcom-server",
+  "name": "@centcom/server",
   "version": "0.0.1",
   "description": "Back-end for the CentCom SS13 Management Platform",
   "main": "dist/index.js",
