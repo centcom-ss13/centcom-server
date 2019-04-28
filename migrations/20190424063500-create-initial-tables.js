@@ -278,7 +278,7 @@ exports.up = callbackify(async function (db) {
       aggregate: {
         type: 'boolean',
         defaultValue: false,
-        nonNull: true,
+        notNull: true,
       }
     },
   );
@@ -303,7 +303,7 @@ exports.up = callbackify(async function (db) {
       active: {
         type: 'boolean',
         defaultValue: true,
-        nonNull: true,
+        notNull: true,
       },
       ip: {
         type: 'string',

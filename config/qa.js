@@ -4,4 +4,6 @@ module.exports = {
   databasePassword: undefined,
   apiHost: 'centcom.ddmers.com',
   apiPort: 3000,
+  frontEndUrl: 'centcom.ddmers.com',
+  frontEndPort: '80',
 };

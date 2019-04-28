@@ -25,7 +25,7 @@ exports.up = async function(db) {
     {
       parent_job_id: {
         type: 'int',
-        nonNull: true,
+        notNull: true,
         foreignKey: {
           name: 'job_aggregation_parent_job_id_fk',
           table: 'job',
@@ -38,7 +38,7 @@ exports.up = async function(db) {
       },
       child_job_id: {
         type: 'int',
-        nonNull: true,
+        notNull: true,
         foreignKey: {
           name: 'job_aggregation_child_job_id_fk',
           table: 'job',

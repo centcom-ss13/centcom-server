@@ -7,4 +7,6 @@ module.exports = {
   apiHost: 'localhost',
   apiPort: 3000,
   databaseDb: 'centcom',
+  frontEndUrl: 'localhost',
+  frontEndPort: 8080,
 };

@@ -1,6 +1,7 @@
 import Hapi from 'hapi';
 import config from 'config';
 import * as controllers from './controller';
+import { getHealthReporter } from './util/healthReporter';
 
 function registerRoute(server, route) {
   console.log(`Registering Route: ${route.method} ${route.path}`);
@@ -28,6 +29,8 @@ async function init() {
   addControllers(server);
 
   await server.start();
+
+  const healthReporter = await getHealthReporter();
 }
 
 process.on('unhandledRejection', (err) => {

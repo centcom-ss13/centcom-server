@@ -1,8 +1,8 @@
 import squel from 'squel';
 
-import {DB} from "../broker/database";
+import {getDB} from "../broker/database";
 
-const db = new DB();
+const db = getDB();
 
 async function getBooks() {
   const query = squel.select()

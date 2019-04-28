@@ -4,7 +4,7 @@ const initDB = {
   method: 'GET',
   path: '/init',
   handler: async function (request, h) {
-    return Boom.notImplemented();
+    throw Boom.notImplemented();
   },
 };
 
@@ -12,7 +12,7 @@ const destroyDB = {
   method: 'GET',
   path: '/destroy',
   handler: async function (request, h) {
-    return Boom.notImplemented();
+    throw Boom.notImplemented();
   },
 };
 
