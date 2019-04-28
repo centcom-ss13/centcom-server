@@ -72,8 +72,6 @@ async function editUser({ id, nickname, email, byond_key, permissions = [], grou
     const newUserPermissions = permissions.filter(permissionId => !userCurrentPermissionIds.includes(permissionId));
     const removedUserPermissions = userCurrentPermissionIds.filter(permissionId => !permissions.includes(permissionId));
 
-    throw new Error("testing transactions - should not modify user");
-
     const permissionAddFutures = newUserPermissions.map(permissionId => UserPermissionRepository.addPermissionToUser(id, permissionId));
     const permissionRemoveFutures = removedUserPermissions.map(permissionId => UserPermissionRepository.removePermissionFromUser(id, permissionId));
 

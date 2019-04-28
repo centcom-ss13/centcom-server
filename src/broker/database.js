@@ -42,8 +42,9 @@ class DB {
   }
 
   async transaction(func) {
-    this.forceConnectionPromise = promisify(this.pool.getConnection)(); //This is because all queries while the transaction is active NEED to be from the same connection
-    console.log('forcing connection for transaction');
+    if(!this.forceConnectionPromise) { //This is because all queries while the transaction is active NEED to be from the same connection
+      this.forceConnectionPromise = promisify(this.pool.getConnection.bind(this.pool))();
+    }
 
     const connection = await this.forceConnectionPromise;
 
