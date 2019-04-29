@@ -4,4 +4,5 @@ module.exports = {
   databasePassword: 'CENTCOM_DB_PASSWORD',
   apiSSLKeyFile: 'CENTCOM_SSL_KEY_FILE',
   apiSSLCertFile: 'CENTCOM_SSL_CERT_FILE',
+  apiSSLKeyPassphrase: 'CENTCOM_SSL_KEY_PASSPHRASE',
 };

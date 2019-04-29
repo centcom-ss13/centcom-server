@@ -28,6 +28,7 @@ async function init() {
     ...(config.get('apiSSL') && { tls: {
       key: fs.readFileSync(config.get('apiSSLKeyFile')),
       cert: fs.readFileSync(config.get('apiSSLCertFile')),
+      passphrase: config.get('apiSSLKeyPassphrase'),
     } }),
     ...(config.get('debug') && { debug: { request: ['error'] } }),
   });

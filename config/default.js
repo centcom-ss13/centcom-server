@@ -12,5 +12,6 @@ module.exports = {
   apiSSL: false,
   apiSSLKeyFile: undefined,
   apiSSLCertFile: undefined,
+  apiSSLKeyPassphrase: undefined,
   frontEndSSL: false,
 };
