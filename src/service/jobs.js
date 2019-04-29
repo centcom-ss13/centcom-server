@@ -1,5 +1,8 @@
 import JobRepository from "../repository/jobs";
 import Boom from '@hapi/boom';
+import {getDB} from "../broker/database";
+
+const db = getDB();
 
 async function getJobs() {
   const jobs = await JobRepository.getJobs();
@@ -22,13 +25,15 @@ async function createJob({
     throw Boom.badRequest('Cannot add child job IDs to a non-aggregate job.');
   }
 
-  const job = await JobRepository.createJob(title, aggregate);
+  return await db.transaction(async () => {
+    const job = await JobRepository.createJob(title, aggregate);
 
-  console.log('created job', job);
+    console.log('created job', job);
 
-  const childJobAddFutures = childJobIds.map(childJobId => JobRepository.addChildJob(job.id, childJobId));
+    const childJobAddFutures = childJobIds.map(childJobId => JobRepository.addChildJob(job.id, childJobId));
 
-  return await Promise.all(childJobAddFutures);
+    return await Promise.all(childJobAddFutures);
+  });
 }
 
 async function editJob({
@@ -41,24 +46,26 @@ async function editJob({
     throw Boom.badRequest('Cannot add child job IDs to a non-aggregate job.');
   }
 
-  const jobEditFuture = JobRepository.editJob(id, title, aggregate);
+  return await db.transaction(async () => {
+    const jobEditFuture = JobRepository.editJob(id, title, aggregate);
 
-  const currentChildJobs = await JobRepository.getChildJobs(id);
-  const currentChildJobIds = currentChildJobs.map(({ child_job_id }) => child_job_id);
+    const currentChildJobs = await JobRepository.getChildJobs(id);
+    const currentChildJobIds = currentChildJobs.map(({ child_job_id }) => child_job_id);
 
-  const newChildJobs = childJobIds.filter(jobId => !currentChildJobIds.includes(jobId));
-  const removedChildJobs = currentChildJobIds.filter(jobId => !childJobIds.includes(jobId));
+    const newChildJobs = childJobIds.filter(jobId => !currentChildJobIds.includes(jobId));
+    const removedChildJobs = currentChildJobIds.filter(jobId => !childJobIds.includes(jobId));
 
-  const childJobAddFutures = newChildJobs.map(childJobId => JobRepository.addChildJob(id, childJobId));
-  const childJobRemoveFutures = removedChildJobs.map(childJobId => JobRepository.removeChildJob(id, childJobId));
+    const childJobAddFutures = newChildJobs.map(childJobId => JobRepository.addChildJob(id, childJobId));
+    const childJobRemoveFutures = removedChildJobs.map(childJobId => JobRepository.removeChildJob(id, childJobId));
 
-  const results = Promise.all([
-    jobEditFuture,
-    ...childJobAddFutures,
-    ...childJobRemoveFutures,
-  ]);
+    const results = Promise.all([
+      jobEditFuture,
+      ...childJobAddFutures,
+      ...childJobRemoveFutures,
+    ]);
 
-  return await results;
+    return await results;
+  });
 }
 
 async function deleteJob(id) {

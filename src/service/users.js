@@ -1,7 +1,6 @@
 import UserRepository from '../repository/users';
 import GroupRepository from '../repository/userGroups';
 import UserPermissionRepository from '../repository/userPermissions';
-import PermissionRepository from '../repository/permissions';
 import GroupPermissionRepository from '../repository/userGroupPermissions';
 import {getDB} from "../broker/database";
 
@@ -99,17 +98,19 @@ async function deleteUser(id) {
 }
 
 async function createUser({ nickname, email, byond_key, permissions = [], groups = [] }) {
-  const user = await UserRepository.createUser(nickname, email, byond_key);
+  return await db.transaction(async () => {
+    const user = await UserRepository.createUser(nickname, email, byond_key);
 
-  const permissionAddFutures = permissions.map(permissionId => UserPermissionRepository.addPermissionToUser(user.id, permissionId));
-  const groupAddFutures = groups.map(groupId => GroupRepository.addUserToGroup(user.id, groupId));
+    const permissionAddFutures = permissions.map(permissionId => UserPermissionRepository.addPermissionToUser(user.id, permissionId));
+    const groupAddFutures = groups.map(groupId => GroupRepository.addUserToGroup(user.id, groupId));
 
-  const results = Promise.all([
-    ...permissionAddFutures,
-    ...groupAddFutures,
-  ]);
+    const results = Promise.all([
+      ...permissionAddFutures,
+      ...groupAddFutures,
+    ]);
 
-  return await results;
+    return await results;
+  });
 }
 
 export default {
