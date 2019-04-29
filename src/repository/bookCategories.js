@@ -1,6 +1,7 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,12 +13,14 @@ async function getBookCategories() {
 }
 
 async function createBookCategory(name, color) {
-  const query = squel.insert()
+  const insertQuery = squel.insert()
   .into('book_category')
   .set('name', name)
   .set('color', color);
 
-  return await db.query(query);
+  const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'book_category'));
+
+  return insertedObject;
 }
 
 async function deleteBookCategory(id) {

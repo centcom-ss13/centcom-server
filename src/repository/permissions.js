@@ -1,6 +1,7 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,12 +13,14 @@ async function getPermissions() {
 }
 
 async function createPermission(name, description) {
-  const query = squel.insert()
+  const insertQuery = squel.insert()
   .into('permission')
   .set('name', name)
   .set('description', description);
 
-  return await db.query(query);
+  const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'permission'));
+
+  return insertedObject;
 }
 
 async function deletePermission(id) {

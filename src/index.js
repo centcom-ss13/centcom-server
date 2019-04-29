@@ -1,5 +1,6 @@
 import Hapi from 'hapi';
 import config from 'config';
+import fs from 'fs';
 import * as controllers from './controller';
 import { getHealthReporter } from './util/healthReporter';
 
@@ -13,6 +14,7 @@ function addControllers(server) {
 }
 
 async function init() {
+
   const server = Hapi.server({
     port: config.get('apiPort'),
     host: config.get('apiHost'),
@@ -23,6 +25,10 @@ async function init() {
         additionalHeaders: ["X-Requested-With"],
       },
     },
+    ...(config.get('apiSSL') && { tls: {
+      key: fs.readFileSync(config.get('apiSSLKeyFile')),
+      cert: fs.readFileSync(config.get('apiSSLCertFile')),
+    } }),
     ...(config.get('debug') && { debug: { request: ['error'] } }),
   });
 

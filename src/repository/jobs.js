@@ -1,6 +1,7 @@
 import squel from 'squel';
 
-import {getDB} from "../broker/database";
+import { getDB } from "../broker/database";
+import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
 
 const db = getDB();
 
@@ -15,19 +16,11 @@ async function createJob(title, aggregate) {
   const insertQuery = squel.insert()
   .into('job')
   .set('title', title)
-  .set('aggregate', aggregate).toString().concat(
-    squel.select().field('LAST_INSERT_ID()').toString()
-  );
+  .set('aggregate', aggregate).toString();
 
-  const insertedId = await db.query(insertQuery);
+  const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'job'));
 
-  const getCreatedObjectQuery = squel.select()
-  .from('job')
-  .where('id = ?', insertedId);
-
-  const results = await db.query(getCreatedObjectQuery);
-
-  return results[0];
+  return insertedObject;
 }
 
 async function deleteJob(id) {

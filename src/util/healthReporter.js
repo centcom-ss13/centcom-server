@@ -37,7 +37,8 @@ class HealthReporter {
       backend: {
         poll: async function() {
           try {
-            const response = await promisify(request)(`http://${config.get('apiHost')}:${config.get('apiPort')}`);
+            const protocol = config.get('apiSSL') ? 'https' : 'http';
+            const response = await promisify(request)(`${protocol}://${config.get('apiHost')}:${config.get('apiPort')}`);
 
             if(response.statusCode && response.statusCode === 200) {
               this.health.backend = STATUS.UP;
@@ -52,7 +53,8 @@ class HealthReporter {
       frontend: {
         poll: async function() {
           try {
-            const response = await promisify(request)(`http://${config.get('frontEndUrl')}:${config.get('frontEndPort')}`);
+            const protocol = config.get('frontEndSSL') ? 'https' : 'http';
+            const response = await promisify(request)(`${protocol}://${config.get('frontEndUrl')}:${config.get('frontEndPort')}`);
 
             if(response.statusCode && response.statusCode === 200) {
               this.health.frontend = STATUS.UP;

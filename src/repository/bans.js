@@ -1,6 +1,7 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,7 +13,7 @@ async function getBans() {
 }
 
 async function createBan(byond_key, reason, expiration_date, ip, computer_id, issuer_id) {
-  const query = squel.insert()
+  const insertQuery = squel.insert()
   .into('ban')
   .set('byond_key', byond_key)
   .set('reason', reason)
@@ -21,7 +22,9 @@ async function createBan(byond_key, reason, expiration_date, ip, computer_id, is
   .set('computer_id', computer_id)
   .set('issuer_id', issuer_id);
 
-  return await db.query(query);
+  const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'ban'));
+
+  return insertedObject;
 }
 
 async function deleteBan(id) {

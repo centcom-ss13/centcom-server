@@ -1,6 +1,7 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
 
 const db = getDB();
 
@@ -22,21 +23,15 @@ async function getUser(id) {
 }
 
 async function createUser(nickname, email, byond_key) {
-  const createQuery = squel.insert()
+  const insertQuery = squel.insert()
   .into('user')
   .set('nickname', nickname)
   .set('email', email)
   .set('byond_key', byond_key);
 
-  await db.query(createQuery);
+  const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'user'));
 
-  const getCreatedObjectQuery = squel.select()
-  .from('user')
-  .where('id = LAST_INSERT_ID()');
-
-  const results = await db.query(getCreatedObjectQuery);
-
-  return results[0];
+  return insertedObject;
 }
 
 async function deleteUser(id) {

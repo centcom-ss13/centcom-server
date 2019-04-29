@@ -9,4 +9,8 @@ module.exports = {
   databaseDb: 'centcom',
   frontEndUrl: 'localhost',
   frontEndPort: 8080,
+  apiSSL: false,
+  apiSSLKeyFile: undefined,
+  apiSSLCertFile: undefined,
+  frontEndSSL: false,
 };
