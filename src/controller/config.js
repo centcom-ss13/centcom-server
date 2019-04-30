@@ -14,7 +14,7 @@ const editConfig = {
   handler: async function (request, h) {
     const configInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await ConfigService.editConfig(configInput);

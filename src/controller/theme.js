@@ -14,7 +14,7 @@ const editTheme = {
   handler: async function (request, h) {
     const themeInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await ThemeService.editTheme(themeInput);

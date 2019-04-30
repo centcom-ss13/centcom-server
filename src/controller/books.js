@@ -14,7 +14,7 @@ const editBook = {
   handler: async function (request, h) {
     const bookInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await BookService.editBook(bookInput);

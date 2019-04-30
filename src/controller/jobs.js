@@ -14,7 +14,7 @@ const editJob = {
   handler: async function (request, h) {
     const jobInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await JobService.editJob(jobInput);

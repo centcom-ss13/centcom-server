@@ -14,7 +14,7 @@ const editBan = {
   handler: async function (request, h) {
     const banInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await BanService.editBan(banInput);

@@ -1,4 +1,5 @@
 import JobRepository from "../repository/jobs";
+import JobValidator from "../validator/jobs";
 import Boom from '@hapi/boom';
 import {getDB} from "../broker/database";
 
@@ -16,14 +17,15 @@ async function getJobs() {
   return hydratedJobs;
 }
 
-async function createJob({
-  title,
-  aggregate = false,
-  childJobIds = [],
-}) {
-  if(!aggregate && childJobIds.length > 0) {
-    throw Boom.badRequest('Cannot add child job IDs to a non-aggregate job.');
-  }
+async function createJob(jobInput) {
+
+  await JobValidator.validateJob(jobInput);
+
+  const {
+    title,
+    aggregate = false,
+    childJobIds = [],
+  } = jobInput;
 
   return await db.transaction(async () => {
     const job = await JobRepository.createJob(title, aggregate);
@@ -36,15 +38,15 @@ async function createJob({
   });
 }
 
-async function editJob({
-  id,
-  title,
-  aggregate = false,
-  childJobIds = [],
-}) {
-  if(!aggregate && childJobIds.length > 0) {
-    throw Boom.badRequest('Cannot add child job IDs to a non-aggregate job.');
-  }
+async function editJob(jobInput) {
+  await JobValidator.validateJob(jobInput);
+
+  const {
+    id,
+    title,
+    aggregate = false,
+    childJobIds = [],
+  } = jobInput;
 
   return await db.transaction(async () => {
     const jobEditFuture = JobRepository.editJob(id, title, aggregate);

@@ -14,7 +14,7 @@ const editPermission = {
   handler: async function (request, h) {
     const permissionInput = {
       ...request.payload,
-      id: request.params.id,
+      id: parseInt(request.params.id, 10),
     };
 
     return await PermissionService.editPermission(permissionInput);
