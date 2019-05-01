@@ -1,7 +1,10 @@
 import squel from 'squel';
 
 import { getDB } from "../broker/database";
-import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,11 +15,11 @@ async function getJobs() {
   return await db.query(query);
 }
 
-async function createJob(title, aggregate) {
+async function createJob(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate']);
   const insertQuery = squel.insert()
   .into('job')
-  .set('title', title)
-  .set('aggregate', aggregate).toString();
+  .setFields(whitelistedInput);
 
   const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'job'));
 
@@ -31,11 +34,11 @@ async function deleteJob(id) {
   return await db.query(query);
 }
 
-async function editJob(id, title, aggregate) {
+async function editJob(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate']);
   const query = squel.update()
   .table('job')
-  .set('title', title)
-  .set('aggregate', aggregate)
+  .setFields(whitelistedInput)
   .where('id = ?', id);
 
   return await db.query(query);

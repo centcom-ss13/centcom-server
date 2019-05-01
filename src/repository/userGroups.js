@@ -1,6 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -58,11 +62,11 @@ async function removeUserFromGroup(user_id, group_id) {
   return await db.query(query);
 }
 
-async function createGroup(name, description) {
+async function createGroup(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'description']);
   const createQuery = squel.insert()
   .into('user_group')
-  .set('name', name)
-  .set('description', description);
+  .setFields(whitelistedInput);
 
   await db.query(createQuery);
 
@@ -83,11 +87,11 @@ async function deleteGroup(id) {
   return await db.query(query);
 }
 
-async function editGroup(id, name, description) {
+async function editGroup(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'description']);
   const query = squel.update()
   .table('user_group')
-  .set('name', name)
-  .set('description', description)
+  .setFields(whitelistedInput)
   .where('id = ?', id);
 
   return await db.query(query);

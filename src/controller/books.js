@@ -12,12 +12,9 @@ const editBook = {
   method: 'PUT',
   path: '/books/{id}',
   handler: async function (request, h) {
-    const bookInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await BookService.editBook(bookInput);
+    return await BookService.editBook(id, request.payload);
   },
 };
 
@@ -49,12 +46,9 @@ const editBookCategory = {
   method: 'PUT',
   path: '/bookCategories/{id}',
   handler: async function (request, h) {
-    const bookInput = {
-      ...request.payload,
-      id: request.params.id,
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await BookService.editBookCategory(bookInput);
+    return await BookService.editBookCategory(id, request.payload);
   },
 };
 

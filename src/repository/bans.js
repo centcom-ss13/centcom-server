@@ -1,7 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
-import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,15 +15,11 @@ async function getBans() {
   return await db.query(query);
 }
 
-async function createBan(byond_key, reason, expiration_date, ip, computer_id, issuer_id) {
+async function createBan(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['byond_key', 'reason', 'expiration_date', 'ip', 'computer_id', 'issuer_id']);
   const insertQuery = squel.insert()
   .into('ban')
-  .set('byond_key', byond_key)
-  .set('reason', reason)
-  .set('expiration_date', expiration_date)
-  .set('ip', ip)
-  .set('computer_id', computer_id)
-  .set('issuer_id', issuer_id);
+  .setFields(whitelistedInput);
 
   const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'ban'));
 
@@ -35,14 +34,11 @@ async function deleteBan(id) {
   return await db.query(query);
 }
 
-async function editBan(id, byond_key, reason, expiration_date, ip, computer_id) {
+async function editBan(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['byond_key', 'reason', 'expiration_date', 'ip', 'computer_id', 'issuer_id']);
   const query = squel.update()
   .table('ban')
-  .set('byond_key', byond_key)
-  .set('reason', reason)
-  .set('expiration_date', expiration_date)
-  .set('ip', ip)
-  .set('computer_id', computer_id)
+  .setFields(whitelistedInput)
   .where('id = ?', id);
 
   return await db.query(query);

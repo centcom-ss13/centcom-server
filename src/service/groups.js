@@ -44,9 +44,9 @@ async function getGroupsForUser(user_id) {
   return await GroupRepository.getGroupsForUser(user_id);
 }
 
-async function editGroup({ id, name, description, permissions = [] }) {
+async function editGroup(id, { name, description, permissions = [] }) {
   return await db.transaction(async () => {
-    const groupEditFuture = GroupRepository.editGroup(id, name, description);
+    const groupEditFuture = GroupRepository.editGroup(id, { name, description });
 
     const groupCurrentPermissions = await GroupPermissionRepository.getPermissionsForGroup(id);
     const groupCurrentPermissionIds = groupCurrentPermissions.map(({ id }) => id);
@@ -73,7 +73,7 @@ async function deleteGroup(id) {
 
 async function createGroup({ name, description, permissions = [] }) {
   return await db.transaction(async () => {
-    const group = await GroupRepository.createGroup(name, description);
+    const group = await GroupRepository.createGroup({ name, description });
 
     const permissionAddFutures = permissions.map(permissionId => GroupPermissionRepository.addPermissionToGroup(group.id, permissionId));
 

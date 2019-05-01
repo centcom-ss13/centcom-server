@@ -12,12 +12,9 @@ const editTheme = {
   method: 'PUT',
   path: '/theme/{id}',
   handler: async function (request, h) {
-    const themeInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await ThemeService.editTheme(themeInput);
+    return await ThemeService.editTheme(id, request.payload);
   },
 };
 

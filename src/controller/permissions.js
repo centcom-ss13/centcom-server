@@ -12,12 +12,9 @@ const editPermission = {
   method: 'PUT',
   path: '/permissions/{id}',
   handler: async function (request, h) {
-    const permissionInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await PermissionService.editPermission(permissionInput);
+    return await PermissionService.editPermission(id, request.payload);
   },
 };
 

@@ -1,7 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
-import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,11 +15,11 @@ async function getPermissions() {
   return await db.query(query);
 }
 
-async function createPermission(name, description) {
+async function createPermission(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'description']);
   const insertQuery = squel.insert()
   .into('permission')
-  .set('name', name)
-  .set('description', description);
+  .setFields(whitelistedInput);
 
   const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'permission'));
 
@@ -31,11 +34,11 @@ async function deletePermission(id) {
   return await db.query(query);
 }
 
-async function editPermission(id, name, description) {
+async function editPermission(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'description']);
   const query = squel.update()
   .table('permission')
-  .set('name', name)
-  .set('description', description)
+  .setFields(whitelistedInput)
   .where('id = ?', id);
 
   return await db.query(query);

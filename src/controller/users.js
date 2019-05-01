@@ -20,12 +20,9 @@ const editUser = {
   method: 'PUT',
   path: '/users/{id}',
   handler: async function (request, h) {
-    const userInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await UserService.editUser(userInput);
+    return await UserService.editUser(id, request.payload);
   },
 };
 

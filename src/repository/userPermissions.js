@@ -1,6 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 

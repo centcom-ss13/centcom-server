@@ -1,7 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
-import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -22,12 +25,11 @@ async function getUser(id) {
   return results[0];
 }
 
-async function createUser(nickname, email, byond_key) {
+async function createUser(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['nickname', 'email', 'byond_key']);
   const insertQuery = squel.insert()
   .into('user')
-  .set('nickname', nickname)
-  .set('email', email)
-  .set('byond_key', byond_key);
+  .setFields(whitelistedInput);
 
   const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'user'));
 
@@ -42,12 +44,11 @@ async function deleteUser(id) {
   return await db.query(query);
 }
 
-async function editUser(id, nickname, email, byond_key) {
+async function editUser(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['nickname', 'email', 'byond_key']);
   const query = squel.update()
   .table('user')
-  .set('nickname', nickname)
-  .set('email', email)
-  .set('byond_key', byond_key)
+  .setFields(whitelistedInput)
   .where(`id = ?`, id);
 
   return await db.query(query);

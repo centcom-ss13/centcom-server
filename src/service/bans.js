@@ -1,32 +1,51 @@
 import BanRepository from "../repository/bans";
-
+import { validateBan } from '../validator/bans';
 async function getBans() {
   return await BanRepository.getBans();
 }
 
-async function createBan({
-  byond_key,
-  reason,
-  expiration_date,
-  ip,
-  computer_id,
-  jobs,
-}, issuer_id) {
-  const ban = await BanRepository.createBan(byond_key, reason, expiration_date, ip, computer_id, issuer_id);
+async function createBan(input, banInput, sender_id) {
+  const defaults = {
+    isJobBan: false,
+    isPermanentBan: false,
+    active: false,
+  };
 
-  return ban;
+  const hydratedBanInput = {
+    ...defaults,
+    ...banInput,
+  };
+
+  validateBan(hydratedBanInput, sender_id);
+
+  const databaseObject = {
+    ...hydratedBanInput,
+    sender_id,
+  };
+
+  return await BanRepository.createBan(databaseObject);
 }
 
-async function editBan({
-  id,
-  byond_key,
-  reason,
-  expiration_date,
-  ip,
-  computer_id,
-  jobs,
-}) {
-  return await BanRepository.editBan(id, byond_key, reason, expiration_date, ip, computer_id);
+async function editBan(id, banInput, sender_id) {
+  const defaults = {
+    isJobBan: false,
+    isPermanentBan: false,
+    active: false,
+  };
+
+  const hydratedBanInput = {
+    ...defaults,
+    ...banInput,
+  };
+
+  validateBan(hydratedBanInput, sender_id);
+
+  const databaseObject = {
+    ...hydratedBanInput,
+    sender_id,
+  };
+
+  return await BanRepository.editBan(id, databaseObject);
 }
 
 async function deleteBan(id) {

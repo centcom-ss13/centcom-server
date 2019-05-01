@@ -61,9 +61,9 @@ async function getUsers() {
   });
 }
 
-async function editUser({ id, nickname, email, byond_key, permissions = [], groups = [] }) {
+async function editUser(id, { nickname, email, byond_key, permissions = [], groups = [] }) {
   return await db.transaction(async () => {
-    const userEditFuture = UserRepository.editUser(id, nickname, email, byond_key);
+    const userEditFuture = UserRepository.editUser(id, { nickname, email, byond_key });
 
     const userCurrentPermissions = await UserPermissionRepository.getPermissionsForUser(id);
     const userCurrentPermissionIds = userCurrentPermissions.map(({ id }) => id);
@@ -99,7 +99,7 @@ async function deleteUser(id) {
 
 async function createUser({ nickname, email, byond_key, permissions = [], groups = [] }) {
   return await db.transaction(async () => {
-    const user = await UserRepository.createUser(nickname, email, byond_key);
+    const user = await UserRepository.createUser({ nickname, email, byond_key });
 
     const permissionAddFutures = permissions.map(permissionId => UserPermissionRepository.addPermissionToUser(user.id, permissionId));
     const groupAddFutures = groups.map(groupId => GroupRepository.addUserToGroup(user.id, groupId));

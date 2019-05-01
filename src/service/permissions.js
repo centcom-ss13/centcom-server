@@ -29,12 +29,12 @@ async function getPermissions() {
   return await PermissionRepository.getPermissions();
 }
 
-async function createPermission({ name, description }) {
-  return await PermissionRepository.createPermission(name, description);
+async function createPermission(input) {
+  return await PermissionRepository.createPermission(input);
 }
 
-async function editPermission({ id, name, description }) {
-  return await PermissionRepository.editPermission(id, name, description);
+async function editPermission(id, input) {
+  return await PermissionRepository.editPermission(id, input);
 }
 
 async function deletePermission(id) {

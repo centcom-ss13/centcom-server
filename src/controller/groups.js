@@ -20,12 +20,9 @@ const editGroup = {
   method: 'PUT',
   path: '/groups/{id}',
   handler: async function (request, h) {
-    const groupInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await GroupService.editGroup(groupInput);
+    return await GroupService.editGroup(id, request.payload);
   },
 };
 

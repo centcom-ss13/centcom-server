@@ -1,6 +1,6 @@
 {
   "defaultEnv": {"ENV": "NODE_ENV"},
-  "dev": {
+  "development": {
     "driver": "mysql",
     "host": "localhost",
     "user": "root",

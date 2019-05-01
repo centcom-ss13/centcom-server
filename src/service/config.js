@@ -11,16 +11,16 @@ async function getConfig() {
   return mappedConfig;
 }
 
-async function createConfig({ cfg_key, cfg_value }) {
+async function createConfig(cfg_key, cfg_value) {
   return await ConfigRepository.createConfig(cfg_key, cfg_value);
 }
 
-async function editConfig({ id, cfg_key, cfg_value }) {
-  return await ConfigRepository.editConfig(id, cfg_key, cfg_value);
+async function editConfig(cfg_key, cfg_value) {
+  return await ConfigRepository.editConfig(cfg_key, cfg_value);
 }
 
-async function deleteConfig(id) {
-  return await ConfigRepository.deleteConfig(id);
+async function deleteConfig(cfg_key) {
+  return await ConfigRepository.deleteConfig(cfg_key);
 }
 
 export default {

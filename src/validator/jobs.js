@@ -4,9 +4,6 @@ import JobService from '../service/jobs';
 const MAX_JOB_TITLE_LENGTH = 100;
 
 async function validateChildJobs({ id, aggregate, childJobIds = [] }) {
-  if(id !== undefined && typeof id !== 'number') {
-    throw Boom.badRequest('Field "id" must a number when editing');
-  }
   if(!Array.isArray(childJobIds)) {
     throw Boom.badRequest('Child Job Ids must be an array (or omitted)');
   }

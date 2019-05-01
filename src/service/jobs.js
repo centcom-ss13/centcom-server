@@ -18,17 +18,26 @@ async function getJobs() {
 }
 
 async function createJob(jobInput) {
+  const defaults = {
+    aggregate: false,
+    childJobIds: [],
+  };
 
-  await JobValidator.validateJob(jobInput);
+  const hydratedJobInput = {
+    ...defaults,
+    ...jobInput,
+  };
+
+  await JobValidator.validateJob(hydratedJobInput);
 
   const {
     title,
-    aggregate = false,
-    childJobIds = [],
-  } = jobInput;
+    aggregate,
+    childJobIds,
+  } = hydratedJobInput;
 
   return await db.transaction(async () => {
-    const job = await JobRepository.createJob(title, aggregate);
+    const job = await JobRepository.createJob({ title, aggregate });
 
     console.log('created job', job);
 
@@ -38,18 +47,27 @@ async function createJob(jobInput) {
   });
 }
 
-async function editJob(jobInput) {
-  await JobValidator.validateJob(jobInput);
+async function editJob(id, jobInput) {
+  const defaults = {
+    aggregate: false,
+    childJobIds: [],
+  };
+
+  const hydratedJobInput = {
+    ...defaults,
+    ...jobInput,
+  };
+
+  await JobValidator.validateJob(hydratedJobInput);
 
   const {
-    id,
     title,
-    aggregate = false,
-    childJobIds = [],
-  } = jobInput;
+    aggregate,
+    childJobIds,
+  } = hydratedJobInput;
 
   return await db.transaction(async () => {
-    const jobEditFuture = JobRepository.editJob(id, title, aggregate);
+    const jobEditFuture = JobRepository.editJob(id, { title, aggregate });
 
     const currentChildJobs = await JobRepository.getChildJobs(id);
     const currentChildJobIds = currentChildJobs.map(({ child_job_id }) => child_job_id);

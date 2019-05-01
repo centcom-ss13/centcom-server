@@ -12,12 +12,9 @@ const editBan = {
   method: 'PUT',
   path: '/bans/{id}',
   handler: async function (request, h) {
-    const banInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await BanService.editBan(banInput);
+    return await BanService.editBan(id, request.payload);
   },
 };
 
@@ -33,7 +30,7 @@ const createBan = {
   method: 'POST',
   path: '/bans',
   handler: async function (request, h) {
-    return await BanService.createBan(request.payload, 1);
+    return await BanService.createBan(request.payload);
   },
 };
 

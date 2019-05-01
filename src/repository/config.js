@@ -20,20 +20,19 @@ async function createConfig(cfg_key, cfg_value) {
   return await db.query(query);
 }
 
-async function deleteConfig(id) {
+async function deleteConfig(cfg_key) {
   const query = squel.delete()
   .from('config')
-  .where('id = ?', id);
+  .where('cfg_key = ?', cfg_key);
 
   return await db.query(query);
 }
 
-async function editConfig(id, cfg_key, cfg_value) {
+async function editConfig(cfg_key, cfg_value) {
   const query = squel.update()
   .table('config')
-  .set('cfg_key', cfg_key)
   .set('cfg_value', cfg_value)
-  .where('id = ?', id);
+  .where('cfg_key = ?', cfg_key);
 
   return await db.query(query);
 }

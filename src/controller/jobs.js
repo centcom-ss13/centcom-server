@@ -12,12 +12,9 @@ const editJob = {
   method: 'PUT',
   path: '/jobs/{id}',
   handler: async function (request, h) {
-    const jobInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
+    const id = parseInt(request.params.id, 10);
 
-    return await JobService.editJob(jobInput);
+    return await JobService.editJob(id, request.payload);
   },
 };
 

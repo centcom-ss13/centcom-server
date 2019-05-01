@@ -10,30 +10,25 @@ const getConfig = {
 
 const editConfig = {
   method: 'PUT',
-  path: '/config/{id}',
+  path: '/config/{key}',
   handler: async function (request, h) {
-    const configInput = {
-      ...request.payload,
-      id: parseInt(request.params.id, 10),
-    };
-
-    return await ConfigService.editConfig(configInput);
+    return await ConfigService.editConfig(request.params.key, request.payload);
   },
 };
 
 const deleteConfig = {
   method: 'DELETE',
-  path: '/config/{id}',
+  path: '/config/{key}',
   handler: async function (request, h) {
-    return await ConfigService.deleteConfig(request.params.id);
+    return await ConfigService.deleteConfig(request.params.key);
   },
 };
 
 const createConfig = {
   method: 'POST',
-  path: '/config',
+  path: '/config/{key}',
   handler: async function (request, h) {
-    return await ConfigService.createConfig(request.payload);
+    return await ConfigService.createConfig(request.params.key, request.payload);
   },
 };
 

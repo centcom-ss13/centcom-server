@@ -1,7 +1,10 @@
 import squel from 'squel';
 
 import {getDB} from "../broker/database";
-import { appendSelectLastInsertedObjectQuery } from "../util/queryUtils";
+import {
+  appendSelectLastInsertedObjectQuery,
+  whitelistKeysInObject,
+} from "../util/queryUtils";
 
 const db = getDB();
 
@@ -12,11 +15,11 @@ async function getBookCategories() {
   return await db.query(query);
 }
 
-async function createBookCategory(name, color) {
+async function createBookCategory(input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'color']);
   const insertQuery = squel.insert()
   .into('book_category')
-  .set('name', name)
-  .set('color', color);
+  .setFields(whitelistedInput);
 
   const [, [insertedObject]] = await db.query(appendSelectLastInsertedObjectQuery(insertQuery, 'book_category'));
 
@@ -31,11 +34,11 @@ async function deleteBookCategory(id) {
   return await db.query(query);
 }
 
-async function editBookCategory(id, name, color) {
+async function editBookCategory(id, input) {
+  const whitelistedInput = whitelistKeysInObject(input, ['name', 'color']);
   const query = squel.update()
   .table('book_category')
-  .set('name', name)
-  .set('color', color)
+  .setFields(whitelistedInput)
   .where('id = ?', id);
 
   return await db.query(query);
