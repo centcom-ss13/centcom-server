@@ -14,6 +14,13 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const id = {
+  type: 'int',
+  notNull: true,
+  primaryKey: true,
+  autoIncrement: true,
+};
+
 const { promisify, callbackify } = require('util');
 
 exports.up = async function(db) {
@@ -23,6 +30,7 @@ exports.up = async function(db) {
   await createTable(
     'job_aggregation',
     {
+      id,
       parent_job_id: {
         type: 'int',
         notNull: true,
