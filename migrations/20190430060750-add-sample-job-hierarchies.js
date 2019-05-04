@@ -46,42 +46,58 @@ exports.up = async function(db) {
     addJob(db, 'Doctor'),
     addJob(db, 'Chemist'),
     addJob(db, 'Psychiatrist'),
+    addJob(db, 'Geneticist'),
+    addJob(db, 'Virologist'),
     addJob(db, 'Chief Medical Officer'),
     addJob(db, 'Department - Medical', 1),
-    addJob(db,  'Chef'),
-    addJob(db,  'Botanist'),
-    addJob(db,  'Head of Personnel'),
-    addJob(db,  'Department - Service', 1),
-    addJob(db,  'Security Officer'),
-    addJob(db,  'Inspector'),
-    addJob(db,  'Warden'),
-    addJob(db,  'Head of Security'),
-    addJob(db,  'Department - Security', 1),
-    addJob(db,  'Station Engineer'),
-    addJob(db,  'Atmospheric Technician'),
-    addJob(db,  'Chief Engineer'),
-    addJob(db,  'Department - Engineering', 1),
-    addJob(db,  'Captain'),
-    addJob(db,  'Head Roles', 1),
-    addJob(db,  'All Jobs', 1),
-  ]);
+    addJob(db, 'Chef'),
+    addJob(db, 'Botanist'),
+    addJob(db, 'Bartender'),
+    addJob(db, 'Librarian'),
+    addJob(db, 'Clown'),
+    addJob(db, 'Mime'),
+    addJob(db, 'Chaplain'),
+    addJob(db, 'Janitor'),
+    addJob(db, 'Lawyer'),
+    addJob(db, 'Head of Personnel'),
+    addJob(db, 'Department - Service', 1),
+    addJob(db, 'Security Officer'),
+    addJob(db, 'Investigator'),
+    addJob(db, 'Warden'),
+    addJob(db, 'Head of Security'),
+    addJob(db, 'Department - Security', 1),
+    addJob(db, 'Station Engineer'),
+    addJob(db, 'Atmospheric Technician'),
+    addJob(db, 'Chief Engineer'),
+    addJob(db, 'Department - Engineering', 1),
+    addJob(db, 'Cargo Technician'),
+    addJob(db, 'Shaft Miner'),
+    addJob(db, 'Quatermaster'),
+    addJob(db, 'Department - Cargo', 1),
+    addJob(db, 'Captain'),
+    addJob(db, 'Assistant'),
+    addJob(db, 'Head Roles', 1),
+    addJob(db, 'Non-Productive Roles', 1),
+    addJob(db, 'All Jobs', 1)]);
 
   await Promise.all([
-    addJobAggregations(db, 4, [1, 2, 3]),
-    addJobAggregations(db, 9, [5, 6, 7, 8]),
-    addJobAggregations(db, 13, [10, 11, 12]),
-    addJobAggregations(db, 18, [14, 15, 16, 17]),
-    addJobAggregations(db, 22, [19, 20, 21]),
-    addJobAggregations(db, 24, [3, 8, 12, 17, 21, 23]),
-    addJobAggregations(db, 25, [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 23]),
+    addJobAggregations(db, 4, [1, 2, 3, 8]),
+    addJobAggregations(db, 11, [5, 6, 7, 8, 9, 10]),
+    addJobAggregations(db, 22, [12, 13, 14, 15, 16, 17, 18, 19, 20, 21]),
+    addJobAggregations(db, 27, [23, 24, 25, 26]),
+    addJobAggregations(db, 31, [28, 29, 30]),
+    addJobAggregations(db, 35, [32, 33, 34]),
+    addJobAggregations(db, 38, [3, 10, 21, 26, 30, 36]),
+    addJobAggregations(db, 39, [37, 16, 20, 15, 17, 7]),
+    addJobAggregations(db, 40, [1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 28, 29, 30, 32, 33, 34, 36, 37]),
   ]);
 };
 
 exports.down = async function(db) {
   const runSql = promisify(db.runSql.bind(db));
 
-  await runSql('DELETE FROM job_aggregation WHERE id BETWEEN 1 AND 7');
-  await runSql('DELETE FROM job WHERE id BETWEEN 1 AND 25');
+  await runSql('DELETE FROM job_aggregation WHERE id BETWEEN 1 AND 10');
+  await runSql('DELETE FROM job WHERE id BETWEEN 1 AND 40');
 };
 
 exports._meta = {
