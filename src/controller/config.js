@@ -6,6 +6,9 @@ const getConfig = {
   handler: async function (request, h) {
     return await ConfigService.getConfig();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editConfig = {

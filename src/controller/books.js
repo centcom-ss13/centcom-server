@@ -6,6 +6,9 @@ const getBooks = {
   handler: async function (request, h) {
     return await BookService.getBooks();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editBook = {
@@ -39,6 +42,9 @@ const getBookCategories = {
   path: '/bookCategories',
   handler: async function (request, h) {
     return await BookService.getBookCategories();
+  },
+  options: {
+    auth: false,
   },
 };
 

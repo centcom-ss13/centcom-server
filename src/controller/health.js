@@ -8,6 +8,9 @@ const getGroups = {
 
     return healthReporter.getHealth();
   },
+  options: {
+    auth: false,
+  },
 };
 
 export default [

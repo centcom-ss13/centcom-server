@@ -4,6 +4,9 @@ const getServers = {
   handler: async function (request, h) {
     return [];
   },
+  options: {
+    auth: false,
+  },
 };
 
 export default [

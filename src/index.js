@@ -3,6 +3,8 @@ import config from 'config';
 import fs from 'fs';
 import * as controllers from './controller';
 import { getHealthReporter } from './util/healthReporter';
+import UserService from './service/users';
+import { generate as generatePassword } from 'generate-password';
 
 function registerRoute(server, route) {
   console.log(`Registering Route: ${route.method} ${route.path}`);
@@ -32,6 +34,36 @@ async function init() {
     } }),
     ...(config.get('debug') && { debug: { request: ['error'] } }),
   });
+
+  await server.register(require('@hapi/cookie'));
+
+  const cookiePassword = generatePassword({
+    length: 32,
+    numbers: true
+  });
+
+  server.auth.strategy('session', 'cookie', {
+    cookie: {
+      name: 'centcom-auth',
+      password: cookiePassword,
+      isSecure: config.get('apiSSL'),
+    },
+    validateFunc: async (request, session) => {
+      if(!session.id) {
+        return { valid: false };
+      }
+
+      const user = UserService.getUser(session.id);
+
+      if(!user) {
+        return { valid: false };
+      }
+
+      return { valid: true, credentials: user };
+    }
+  });
+
+  server.auth.default('session');
 
   addControllers(server);
 

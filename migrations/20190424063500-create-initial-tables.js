@@ -130,11 +130,16 @@ exports.up = callbackify(async function (db) {
     'user',
     {
       id,
-      nickname: {
+      username: {
         type: 'string',
         length: 200,
         notNull: true,
         unique: true,
+      },
+      password: {
+        type: 'string', //bcrypt encryption
+        length: 200,
+        notNull: true,
       },
       email: {
         type: 'string',

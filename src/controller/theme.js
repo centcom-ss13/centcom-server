@@ -6,6 +6,9 @@ const getTheme = {
   handler: async function (request, h) {
     return await ThemeService.getTheme();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editTheme = {
@@ -39,6 +42,9 @@ const getUserThemes = {
   path: '/users/:userId/theme',
   handler: async function (request, h) {
     return await ThemeService.getUserTheme(request.params.id);
+  },
+  options: {
+    auth: false,
   },
 };
 

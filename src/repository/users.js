@@ -25,8 +25,18 @@ async function getUser(id) {
   return results[0];
 }
 
+async function getUserByUsername(username) {
+  const query = squel.select()
+  .from('user')
+  .where(`username = ?`, username);
+
+  const results = await db.query(query);
+
+  return results[0];
+}
+
 async function createUser(input) {
-  const whitelistedInput = whitelistKeysInObject(input, ['nickname', 'email', 'byond_key']);
+  const whitelistedInput = whitelistKeysInObject(input, ['username', 'email', 'byond_key', 'password']);
   const insertQuery = squel.insert()
   .into('user')
   .setFields(whitelistedInput);
@@ -45,7 +55,7 @@ async function deleteUser(id) {
 }
 
 async function editUser(id, input) {
-  const whitelistedInput = whitelistKeysInObject(input, ['nickname', 'email', 'byond_key']);
+  const whitelistedInput = whitelistKeysInObject(input, ['username', 'email', 'byond_key', 'password']);
   const query = squel.update()
   .table('user')
   .setFields(whitelistedInput)
@@ -57,6 +67,7 @@ async function editUser(id, input) {
 export default {
   getUsers,
   getUser,
+  getUserByUsername,
   createUser,
   deleteUser,
   editUser,

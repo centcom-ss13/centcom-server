@@ -6,6 +6,9 @@ const getPermissions = {
   handler: async function (request, h) {
     return await PermissionService.getPermissions();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editPermission = {

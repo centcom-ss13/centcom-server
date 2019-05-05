@@ -11,10 +11,10 @@ const stripUndefinedValuesFromObject = (object) => Object.entries(object)
 }), {});
 
 const stripKeysFromObject = (object, stripKeys = []) => Object.entries(object)
-.reduce(([output, [key, value]]) => ({
+.reduce((output, [key, value]) => ({
   ...output,
   ...(!stripKeys.includes(key) && { [key]: value }),
-}));
+}), {});
 
 const whitelistKeysInObject = (object, whitelistKeys = []) => Object.entries(object)
 .reduce((output, [key, value]) => ({

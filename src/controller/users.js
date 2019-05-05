@@ -1,10 +1,18 @@
 import UserService from '../service/users';
+import { stripKeysFromObject } from "../util/queryUtils";
 
 const getUser = {
   method: 'GET',
   path: '/users/{id}',
   handler: async function (request, h) {
-    return await UserService.getUser(request.params.id);
+    const user = await UserService.getUser(request.params.id);
+
+    const prunedUser = stripKeysFromObject(user, ['password']);
+
+    return prunedUser;
+  },
+  options: {
+    auth: false,
   },
 };
 
@@ -12,7 +20,14 @@ const getUsers = {
   method: 'GET',
   path: '/users',
   handler: async function (request, h) {
-    return await UserService.getUsers();
+    const users = await UserService.getUsers();
+
+    const prunedUsers = users.map(user => stripKeysFromObject(user, ['password']));
+
+    return prunedUsers;
+  },
+  options: {
+    auth: false,
   },
 };
 

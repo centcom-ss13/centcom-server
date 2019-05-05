@@ -6,6 +6,9 @@ const getDonationLevels = {
   handler: async function (request, h) {
     return await DonationLevelService.getDonationLevels();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editDonationLevel = {

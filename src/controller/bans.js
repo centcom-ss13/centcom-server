@@ -6,6 +6,9 @@ const getBans = {
   handler: async function (request, h) {
     return await BanService.getBans();
   },
+  options: {
+    auth: false,
+  },
 };
 
 const editBan = {
