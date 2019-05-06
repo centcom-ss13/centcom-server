@@ -29,7 +29,6 @@ class DB {
     }
     try {
       if (this.forceConnectionPromise) {
-        console.log('using forced connection for query');
         const connection = await this.forceConnectionPromise;
         return await promisify(connection.query.bind(connection))(query.toString());
       } else {

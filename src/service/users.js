@@ -83,8 +83,7 @@ async function getUsers() {
 
 async function editUser(id, { username, email, byond_key, permissions = [], groups = [], password }) {
   return await db.transaction(async () => {
-    const decryptedPassword = password && (await RsaTokens.decrypt(password));
-    const hashedPassword = decryptedPassword && (await getHash(decryptedPassword));
+    const hashedPassword = password && (await getHash(password));
 
     const userEditFuture = UserRepository.editUser(id, {
       username,
@@ -111,13 +110,15 @@ async function editUser(id, { username, email, byond_key, permissions = [], grou
     const groupAddFutures = newUserGroups.map(groupId => GroupRepository.addUserToGroup(id, groupId));
     const groupRemoveFutures = removedUserGroups.map(groupId => GroupRepository.removeUserFromGroup(id, groupId));
 
-    return Promise.all([
+    await Promise.all([
       userEditFuture,
       ...permissionAddFutures,
       ...permissionRemoveFutures,
       ...groupAddFutures,
       ...groupRemoveFutures
     ]);
+
+    return await getUser(id);
   });
 }
 
@@ -127,8 +128,7 @@ async function deleteUser(id) {
 
 async function createUser({ username, email, byond_key, permissions = [], groups = [], password }) {
   return await db.transaction(async () => {
-    const decryptedPassword = password && (await RsaTokens.decrypt(password));
-    const hashedPassword = decryptedPassword && (await getHash(decryptedPassword));
+    const hashedPassword = password && (await getHash(password));
 
     const user = await UserRepository.createUser({
       username,
@@ -145,7 +145,9 @@ async function createUser({ username, email, byond_key, permissions = [], groups
       ...groupAddFutures,
     ]);
 
-    return await results;
+    await results;
+
+    return await getUser(user.id);
   });
 }
 

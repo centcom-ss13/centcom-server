@@ -53,6 +53,64 @@ const login = {
   }
 };
 
+const register = {
+  method: 'POST',
+  path: '/register',
+  options: {
+    auth: {
+      mode: 'try'
+    },
+    handler: async function (request, h) {
+      try {
+        const credentials = await request.auth.credentials;
+
+        const userId = credentials && credentials.id;
+
+        if (userId) {
+          return Boom.forbidden('Please logout to register an account');
+        }
+      } catch (e) {
+      }
+
+      const { username, email, password } = request.payload;
+
+      if (!username) {
+        return Boom.badRequest('Username is required');
+      }
+      if (!email) {
+        return Boom.badRequest('Email is required');
+      }
+      if (!password) {
+        return Boom.badRequest('Password is required');
+      }
+
+      let decryptedPassword;
+      try {
+        decryptedPassword = await RsaTokens.decrypt(password);
+
+        if (!decryptedPassword) {
+          return Boom.badRequest('Password must be encrypted using an RSA public key available at /publicKey');
+        }
+      } catch (e) {
+        return Boom.badRequest('Password must be encrypted using an RSA public key available at /publicKey');
+      }
+
+      const createdUser = await UserService.createUser({
+        username,
+        email,
+        password: decryptedPassword,
+      });
+
+      request.cookieAuth.set({ id: createdUser.id });
+
+      return {
+        registered: true,
+        authenticated: true,
+      };
+    },
+  },
+};
+
 const currentUser = {
   method: 'GET',
   path: '/currentUser',
@@ -61,7 +119,6 @@ const currentUser = {
       mode: 'try'
     },
     handler: async (request, h) => {
-
       let userId;
       try {
         const credentials = await request.auth.credentials;
@@ -104,4 +161,5 @@ export default [
   login,
   currentUser,
   logout,
+  register,
 ];

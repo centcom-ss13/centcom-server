@@ -1,5 +1,6 @@
 import UserService from '../service/users';
 import { stripKeysFromObject } from "../util/queryUtils";
+import { decryptUserSecrets } from '../mapper/user';
 
 const getUser = {
   method: 'GET',
@@ -31,7 +32,9 @@ const editUser = {
   handler: async function (request, h) {
     const id = parseInt(request.params.id, 10);
 
-    return await UserService.editUser(id, request.payload);
+    const decryptedUser = await decryptUserSecrets(request.payload);
+
+    return await UserService.editUser(id, decryptedUser);
   },
 };
 
@@ -47,7 +50,9 @@ const createUser = {
   method: 'POST',
   path: '/users',
   handler: async function (request, h) {
-    return await UserService.createUser(request.payload);
+    const decryptedUser = await decryptUserSecrets(request.payload);
+
+    return await UserService.createUser(decryptedUser);
   },
 };
 

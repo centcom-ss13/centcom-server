@@ -39,8 +39,6 @@ async function createJob(jobInput) {
   return await db.transaction(async () => {
     const job = await JobRepository.createJob({ title, aggregate });
 
-    console.log('created job', job);
-
     const childJobAddFutures = childJobIds.map(childJobId => JobRepository.addChildJob(job.id, childJobId));
 
     return await Promise.all(childJobAddFutures);
