@@ -11,9 +11,6 @@ const getUser = {
 
     return prunedUser;
   },
-  options: {
-    auth: false,
-  },
 };
 
 const getUsers = {
@@ -25,9 +22,6 @@ const getUsers = {
     const prunedUsers = users.map(user => stripKeysFromObject(user, ['password']));
 
     return prunedUsers;
-  },
-  options: {
-    auth: false,
   },
 };
 

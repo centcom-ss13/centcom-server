@@ -6,9 +6,6 @@ const getJobs = {
   handler: async function (request, h) {
     return await JobService.getJobs();
   },
-  options: {
-    auth: false,
-  },
 };
 
 const editJob = {

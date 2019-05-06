@@ -6,9 +6,6 @@ const getGroup = {
   handler: async function (request, h) {
     return await GroupService.getGroup(request.params.id);
   },
-  options: {
-    auth: false,
-  },
 };
 
 const getGroups = {
@@ -16,9 +13,6 @@ const getGroups = {
   path: '/groups',
   handler: async function (request, h) {
     return await GroupService.getGroups();
-  },
-  options: {
-    auth: false,
   },
 };
 

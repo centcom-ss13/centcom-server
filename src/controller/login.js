@@ -2,6 +2,7 @@ import Boom from '@hapi/boom';
 import UserService from "../service/users";
 import RsaTokens from '../util/rsaTokens';
 import { compareHash } from "../util/hash";
+import { stripKeysFromObject } from "../util/queryUtils";
 
 const login = {
   method: 'POST',
@@ -16,7 +17,12 @@ const login = {
         return Boom.badRequest('Requires username and password');
       }
 
-      const user = await UserService.getUserByUsername(username);
+      let user;
+      try {
+        user = await UserService.getUserByUsername(username);
+      } catch(e) {
+        return Boom.badRequest('Invalid username/password');
+      }
 
       if (!user) {
         return Boom.badRequest('Invalid username/password');
@@ -55,7 +61,29 @@ const currentUser = {
       mode: 'try'
     },
     handler: async (request, h) => {
-      return request.auth.credentials;
+
+      let userId;
+      try {
+        const credentials = await request.auth.credentials;
+
+        userId = credentials && credentials.id;
+
+        if(!userId) {
+          return Boom.unauthorized('Invalid credentials');
+        }
+
+        const user = await UserService.getUser(userId);
+
+        if(!user) {
+          return Boom.unauthorized('Invalid credentials');
+        }
+
+        const prunedUser = stripKeysFromObject(user, ['password']);
+
+        return prunedUser;
+      } catch(e) {
+        return Boom.unauthorized('Invalid credentials');
+      }
     }
   }
 };

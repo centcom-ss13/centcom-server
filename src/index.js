@@ -22,9 +22,10 @@ async function init() {
     host: config.get('apiHost'),
     routes: {
       cors: {
-        origin: ["*"],
+        origin: [`${config.get('frontEndSSL') ? 'https' : 'http'}://${config.get('frontEndUrl')}:${config.get('frontEndPort')}`],
         headers: ["Accept", "Content-Type"],
         additionalHeaders: ["X-Requested-With"],
+        credentials: true,
       },
     },
     ...(config.get('apiSSL') && { tls: {
@@ -53,13 +54,17 @@ async function init() {
         return { valid: false };
       }
 
-      const user = UserService.getUser(session.id);
+      try {
+        const user = UserService.getUser(session.id);
 
-      if(!user) {
+        if(!user) {
+          return { valid: false };
+        }
+
+        return { valid: true, credentials: user };
+      } catch(e) {
         return { valid: false };
       }
-
-      return { valid: true, credentials: user };
     }
   });
 

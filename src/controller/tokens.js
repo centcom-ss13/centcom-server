@@ -17,9 +17,6 @@ const encrypt = {
   handler: async function (request, h) {
     return await RsaTokens.encrypt(request.payload);
   },
-  options: {
-    auth: false,
-  },
 };
 
 const decrypt = {
@@ -27,9 +24,6 @@ const decrypt = {
   path: '/decrypt',
   handler: async function (request, h) {
     return await RsaTokens.decrypt(request.payload);
-  },
-  options: {
-    auth: false,
   },
 };
 

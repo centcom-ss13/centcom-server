@@ -1,6 +1,6 @@
 import { getHealthReporter } from '../util/healthReporter';
 
-const getGroups = {
+const getHealth = {
   method: 'GET',
   path: '/health',
   handler: async function () {
@@ -14,5 +14,5 @@ const getGroups = {
 };
 
 export default [
-  getGroups,
+  getHealth,
 ];
