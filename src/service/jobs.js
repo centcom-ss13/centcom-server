@@ -6,13 +6,20 @@ import {getDB} from "../broker/database";
 const db = getDB();
 
 async function getJobs() {
-  const jobs = await JobRepository.getJobs();
+  const [
+    jobs,
+    childJobs,
+  ] = await Promise.all([
+    JobRepository.getJobs(),
+    JobRepository.getAllChildJobs(),
+  ]);
 
-  const hydratedJobs = await Promise.all(jobs.map(async job => ({
+  const hydratedJobs = jobs.map(job => ({
     ...job,
-    childJobIds: (await JobRepository.getChildJobs(job.id))
+    childJobIds: childJobs
+    .filter(({ parent_job_id }) => job.id === parent_job_id)
     .map(({ child_job_id }) => child_job_id),
-  })));
+  }));
 
   return hydratedJobs;
 }

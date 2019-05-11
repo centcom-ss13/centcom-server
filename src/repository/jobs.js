@@ -52,6 +52,13 @@ async function getChildJobs(id) {
   return await db.query(query);
 }
 
+async function getAllChildJobs() {
+  const query = squel.select()
+  .from('job_aggregation');
+
+  return await db.query(query);
+}
+
 async function addChildJob(parentId, childId) {
   const query = squel.insert()
   .into('job_aggregation')
@@ -70,4 +77,4 @@ async function removeChildJob(parentId, childId) {
   return await db.query(query);
 }
 
-export default { getJobs, createJob, deleteJob, editJob, addChildJob, removeChildJob, getChildJobs };
+export default { getJobs, createJob, deleteJob, editJob, addChildJob, removeChildJob, getChildJobs, getAllChildJobs };

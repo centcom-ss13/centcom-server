@@ -1,50 +1,39 @@
-import PermissionRepository from '../repository/permissions';
 import UserPermissionRepository from '../repository/userPermissions';
 import GroupRepository from '../repository/userGroups';
 import GroupPermissionRepository from '../repository/userGroupPermissions';
+import permissions from '../repository/permissions';
 
 async function getDerivedUserPermissions(user_id) {
-  const userGroups = await GroupRepository.getGroupsForUser(user_id);
   const [
     userPermissions,
-    groupPermissions,
-    permissions,
+    userGroups,
+    allUserGroupPermissions,
   ] = await Promise.all([
     UserPermissionRepository.getPermissionsForUser(user_id),
-    Promise.all(userGroups.map(({ id }) => GroupPermissionRepository.getPermissionsForGroup(id))),
-    PermissionRepository.getPermissions(),
+    GroupRepository.getGroupsForUser(user_id),
+    GroupPermissionRepository.getAllGroupPermissions(),
   ]);
 
-  const aggregatedPermissionIds = Array.from(new Set([
-    ...userPermissions.map(({ id }) => id),
-    ...groupPermissions.reduce((acc, cur) => [...acc, ...cur.map(({ id }) => id)], []),
+  const aggregatedPermissions = Array.from(new Set([
+    ...userPermissions,
+    ...allUserGroupPermissions
+      .filter(({ group_id }) =>
+        userGroups
+          .map(({ id }) => id)
+          .includes(group_id))
+      .map(({ permission }) => permission)
+      .reduce((acc, cur) => ([...acc, ...cur]), []),
   ]));
 
-  const filledPermissions = aggregatedPermissionIds.map(id => permissions.find(permission => permission.id === id));
-
-  return filledPermissions;
+  return aggregatedPermissions;
 }
 
-async function getPermissions() {
-  return await PermissionRepository.getPermissions();
+function getPermissions() {
+  return permissions;
 }
 
-async function createPermission(input) {
-  return await PermissionRepository.createPermission(input);
-}
-
-async function editPermission(id, input) {
-  return await PermissionRepository.editPermission(id, input);
-}
-
-async function deletePermission(id) {
-  return await PermissionRepository.deletePermission(id);
-}
 
 export default {
   getDerivedUserPermissions,
   getPermissions,
-  createPermission,
-  editPermission,
-  deletePermission,
 };

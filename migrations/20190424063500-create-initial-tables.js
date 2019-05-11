@@ -158,18 +158,10 @@ exports.up = callbackify(async function (db) {
     'user_permission',
     {
       id,
-      permission_id: {
-        type: 'int',
+      permission: {
+        type: 'string',
         notNull: true,
-        foreignKey: {
-          name: 'user_permission_permission_id_fk',
-          table: 'permission',
-          rules: {
-            onDelete: 'CASCADE',
-            onUpdate: 'RESTRICT',
-          },
-          mapping: 'id',
-        }
+        length: 200,
       },
       user_id: {
         type: 'int',
@@ -241,18 +233,10 @@ exports.up = callbackify(async function (db) {
     'user_group_permission',
     {
       id,
-      permission_id: {
-        type: 'int',
+      permission: {
+        type: 'string',
         notNull: true,
-        foreignKey: {
-          name: 'user_group_permission_permission_id_fk',
-          table: 'permission',
-          rules: {
-            onDelete: 'CASCADE',
-            onUpdate: 'RESTRICT',
-          },
-          mapping: 'id',
-        }
+        length: 200,
       },
       group_id: {
         type: 'int',
@@ -427,9 +411,9 @@ exports.up = callbackify(async function (db) {
   );
 
   const addIndexes = await Promise.all([
-    addIndex('user_permission', 'user_permission_index', ['user_id', 'permission_id'], true),
+    addIndex('user_permission', 'user_permission_index', ['user_id', 'permission'], true),
     addIndex('user_group_member', 'user_group_member_index', ['user_id', 'group_id'], true),
-    addIndex('user_group_permission', 'user_group_permission_index', ['group_id', 'permission_id'], true),
+    addIndex('user_group_permission', 'user_group_permission_index', ['group_id', 'permission'], true),
     addIndex('job_ban', 'job_ban_index', ['ban_id', 'job_id'], true),
     addIndex('user_theme_setting', 'user_theme_setting_index', ['user_id', 'theme_id'], true),
   ]);

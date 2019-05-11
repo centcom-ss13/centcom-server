@@ -31,7 +31,7 @@ async function getGroups() {
   return groups.map(group => {
     const currentGroupPermissions = groupPermissions
     .filter(({ group_id }) => group_id === group.id)
-    .map(({ permission_id }) => permission_id);
+    .map(({ permission }) => permission);
 
     return {
       ...group,
@@ -49,13 +49,12 @@ async function editGroup(id, { name, description, permissions = [] }) {
     const groupEditFuture = GroupRepository.editGroup(id, { name, description });
 
     const groupCurrentPermissions = await GroupPermissionRepository.getPermissionsForGroup(id);
-    const groupCurrentPermissionIds = groupCurrentPermissions.map(({ id }) => id);
 
-    const newGroupPermissions = permissions.filter(permissionId => !groupCurrentPermissionIds.includes(permissionId));
-    const removedGroupPermissions = groupCurrentPermissionIds.filter(permissionId => !permissions.includes(permissionId));
+    const newGroupPermissions = permissions.filter(permission => !groupCurrentPermissions.includes(permission));
+    const removedGroupPermissions = groupCurrentPermissions.filter(permission => !permissions.includes(permission));
 
-    const permissionAddFutures = newGroupPermissions.map(permissionId => GroupPermissionRepository.addPermissionToGroup(id, permissionId));
-    const permissionRemoveFutures = removedGroupPermissions.map(permissionId => GroupPermissionRepository.removePermissionFromGroup(id, permissionId));
+    const permissionAddFutures = newGroupPermissions.map(permission => GroupPermissionRepository.addPermissionToGroup(id, permission));
+    const permissionRemoveFutures = removedGroupPermissions.map(permission => GroupPermissionRepository.removePermissionFromGroup(id, permission));
 
     const results = Promise.all([
       groupEditFuture,
@@ -75,7 +74,7 @@ async function createGroup({ name, description, permissions = [] }) {
   return await db.transaction(async () => {
     const group = await GroupRepository.createGroup({ name, description });
 
-    const permissionAddFutures = permissions.map(permissionId => GroupPermissionRepository.addPermissionToGroup(group.id, permissionId));
+    const permissionAddFutures = permissions.map(permission => GroupPermissionRepository.addPermissionToGroup(group.id, permission));
 
     const results = Promise.all([
       ...permissionAddFutures,
