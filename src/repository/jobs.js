@@ -16,7 +16,7 @@ async function getJobs() {
 }
 
 async function createJob(input) {
-  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate']);
+  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate', 'antag']);
   const insertQuery = squel.insert()
   .into('job')
   .setFields(whitelistedInput);
@@ -35,7 +35,7 @@ async function deleteJob(id) {
 }
 
 async function editJob(id, input) {
-  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate']);
+  const whitelistedInput = whitelistKeysInObject(input, ['title', 'aggregate', 'antag']);
   const query = squel.update()
   .table('job')
   .setFields(whitelistedInput)

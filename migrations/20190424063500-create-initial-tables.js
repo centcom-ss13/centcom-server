@@ -14,20 +14,11 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const { promisify, callbackify } = require('util');
+const MigrationUtils = require('./util/migrationUtils');
 
-const id = {
-  type: 'int',
-  notNull: true,
-  primaryKey: true,
-  autoIncrement: true,
-};
-
-exports.up = callbackify(async function (db) {
-  const createTable = promisify(db.createTable.bind(db));
-  const addIndex = promisify(db.addIndex.bind(db));
-
-  await createTable(
+exports.up = MigrationUtils.mySqlUp(async function (mySqlUtils) {
+  const id = mySqlUtils.getIdField();
+  await mySqlUtils.createTable(
     'server',
     {
       id,
@@ -46,8 +37,8 @@ exports.up = callbackify(async function (db) {
     },
   );
 
-  await createTable(
-    'config',
+  await mySqlUtils.createTable(
+    'community_config',
     {
       id,
       cfg_key: {
@@ -63,7 +54,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'book_category',
     {
       id,
@@ -80,7 +71,7 @@ exports.up = callbackify(async function (db) {
     },
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'book',
     {
       id,
@@ -109,7 +100,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'permission',
     {
       id,
@@ -126,7 +117,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user',
     {
       id,
@@ -154,12 +145,12 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user_permission',
     {
       id,
       permission: {
-        type: 'string',
+        type: 'string', //Acceptable values are keys of the permissions repository
         notNull: true,
         length: 200,
       },
@@ -179,7 +170,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user_group',
     {
       id,
@@ -196,7 +187,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user_group_member',
     {
       id,
@@ -229,12 +220,12 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user_group_permission',
     {
       id,
       permission: {
-        type: 'string',
+        type: 'string', //Acceptable values are keys of the permissions repository
         notNull: true,
         length: 200,
       },
@@ -254,7 +245,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'job',
     {
       id,
@@ -268,11 +259,16 @@ exports.up = callbackify(async function (db) {
         type: 'boolean',
         defaultValue: false,
         notNull: true,
+      },
+      antag: {
+        type: 'boolean',
+        defaultValue: false,
+        notNull: true,
       }
     },
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'ban',
     {
       id,
@@ -318,7 +314,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'job_ban',
     {
       id,
@@ -351,7 +347,7 @@ exports.up = callbackify(async function (db) {
     }
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'theme_setting',
     {
       id,
@@ -372,7 +368,7 @@ exports.up = callbackify(async function (db) {
     },
   );
 
-  await createTable(
+  await mySqlUtils.createTable(
     'user_theme_setting',
     {
       id,
@@ -411,32 +407,35 @@ exports.up = callbackify(async function (db) {
   );
 
   const addIndexes = await Promise.all([
-    addIndex('user_permission', 'user_permission_index', ['user_id', 'permission'], true),
-    addIndex('user_group_member', 'user_group_member_index', ['user_id', 'group_id'], true),
-    addIndex('user_group_permission', 'user_group_permission_index', ['group_id', 'permission'], true),
-    addIndex('job_ban', 'job_ban_index', ['ban_id', 'job_id'], true),
-    addIndex('user_theme_setting', 'user_theme_setting_index', ['user_id', 'theme_id'], true),
+    mySqlUtils.addIndex('user_permission', 'user_permission_index', ['user_id', 'permission'], true),
+    mySqlUtils.addIndex('user_group_member', 'user_group_member_index', ['user_id', 'group_id'], true),
+    mySqlUtils.addIndex('user_group_permission', 'user_group_permission_index', ['group_id', 'permission'], true),
+    mySqlUtils.addIndex('job_ban', 'job_ban_index', ['ban_id', 'job_id'], true),
+    mySqlUtils.addIndex('user_theme_setting', 'user_theme_setting_index', ['user_id', 'theme_id'], true),
   ]);
 });
 
-exports.down = callbackify(async function (db) {
-  const dropTable = promisify((tableName, callback) => db.dropTable.call(db, tableName, { ifExists: true }, callback));
-
-  await dropTable('user_theme_setting');
-  await dropTable('job_ban');
-  await dropTable('user_group_permission');
-  await dropTable('user_group_member');
-  await dropTable('user_permission');
-  await dropTable('book');
-  await dropTable('book_category');
-  await dropTable('config');
-  await dropTable('server');
-  await dropTable('job');
-  await dropTable('user_group');
-  await dropTable('ban');
-  await dropTable('user');
-  await dropTable('permission');
-  await dropTable('theme_setting');
+exports.down = MigrationUtils.mySqlDown(async function (mySqlUtils) {
+  await mySqlUtils.dropTable('user_theme_setting');
+  await mySqlUtils.dropTable('job_ban');
+  await mySqlUtils.dropTable('user_group_permission');
+  await mySqlUtils.dropTable('user_group_member');
+  await mySqlUtils.dropTable('user_permission');
+  await mySqlUtils.dropTable('book');
+  await mySqlUtils.dropTable('book_category');
+  try {
+    await mySqlUtils.dropTable('config');
+  } catch(e) {}
+  try {
+    await mySqlUtils.dropTable('community_config');
+  } catch(e) {}
+  await mySqlUtils.dropTable('server');
+  await mySqlUtils.dropTable('job');
+  await mySqlUtils.dropTable('user_group');
+  await mySqlUtils.dropTable('ban');
+  await mySqlUtils.dropTable('user');
+  await mySqlUtils.dropTable('permission');
+  await mySqlUtils.dropTable('theme_setting');
 });
 
 exports._meta = {

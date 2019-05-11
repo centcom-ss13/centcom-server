@@ -1,1 +1,0 @@
-DELETE FROM config WHERE 1=1;

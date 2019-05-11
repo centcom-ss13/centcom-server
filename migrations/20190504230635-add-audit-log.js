@@ -14,19 +14,11 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const id = {
-  type: 'int',
-  notNull: true,
-  primaryKey: true,
-  autoIncrement: true,
-};
+const MigrationUtils = require('./util/migrationUtils');
 
-const { promisify } = require('util');
-
-exports.up = async function(db) {
-  const createTable = promisify(db.createTable.bind(db));
-
-  await createTable('audit_log', {
+exports.up = MigrationUtils.mySqlUp(async function(mySqlUtils) {
+  const id = mySqlUtils.getIdField();
+  await mySqlUtils.createTable('audit_log', {
     id,
     action: {
       type: 'string',
@@ -63,13 +55,11 @@ exports.up = async function(db) {
       nonNull: true,
     }
   })
-};
+});
 
-exports.down = async function(db) {
-  const dropTable = promisify((tableName, callback) => db.dropTable.call(db, tableName, { ifExists: true }, callback));
-
-  await dropTable('audit_log');
-};
+exports.down = MigrationUtils.mySqlDown(async function(mySqlDown) {
+  await mySqlDown.dropTable('audit_log');
+});
 
 exports._meta = {
   "version": 1

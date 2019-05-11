@@ -27,6 +27,7 @@ async function getJobs() {
 async function createJob(jobInput) {
   const defaults = {
     aggregate: false,
+    antag: false,
     childJobIds: [],
   };
 
@@ -40,11 +41,12 @@ async function createJob(jobInput) {
   const {
     title,
     aggregate,
+    antag,
     childJobIds,
   } = hydratedJobInput;
 
   return await db.transaction(async () => {
-    const job = await JobRepository.createJob({ title, aggregate });
+    const job = await JobRepository.createJob({ title, aggregate, antag });
 
     const childJobAddFutures = childJobIds.map(childJobId => JobRepository.addChildJob(job.id, childJobId));
 
@@ -55,6 +57,7 @@ async function createJob(jobInput) {
 async function editJob(id, jobInput) {
   const defaults = {
     aggregate: false,
+    antag: false,
     childJobIds: [],
   };
 
@@ -68,11 +71,12 @@ async function editJob(id, jobInput) {
   const {
     title,
     aggregate,
+    antag,
     childJobIds,
   } = hydratedJobInput;
 
   return await db.transaction(async () => {
-    const jobEditFuture = JobRepository.editJob(id, { title, aggregate });
+    const jobEditFuture = JobRepository.editJob(id, { title, aggregate, antag });
 
     const currentChildJobs = await JobRepository.getChildJobs(id);
     const currentChildJobIds = currentChildJobs.map(({ child_job_id }) => child_job_id);

@@ -1,7 +1,7 @@
-import ConfigRepository from '../repository/config';
+import CommunityConfigRepository from '../repository/communityConfig';
 
 async function getConfig() {
-  const config = await ConfigRepository.getConfig();
+  const config = await CommunityConfigRepository.getConfig();
 
   const mappedConfig = config.reduce((acc, { cfg_key, cfg_value }) => ({
     ...acc,
@@ -12,15 +12,15 @@ async function getConfig() {
 }
 
 async function createConfig(cfg_key, cfg_value) {
-  return await ConfigRepository.createConfig(cfg_key, cfg_value);
+  return await CommunityConfigRepository.createConfig(cfg_key, cfg_value);
 }
 
 async function editConfig(cfg_key, cfg_value) {
-  return await ConfigRepository.editConfig(cfg_key, cfg_value);
+  return await CommunityConfigRepository.editConfig(cfg_key, cfg_value);
 }
 
 async function deleteConfig(cfg_key) {
-  return await ConfigRepository.deleteConfig(cfg_key);
+  return await CommunityConfigRepository.deleteConfig(cfg_key);
 }
 
 export default {

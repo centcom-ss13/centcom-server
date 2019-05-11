@@ -14,19 +14,11 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const id = {
-  type: 'int',
-  notNull: true,
-  primaryKey: true,
-  autoIncrement: true,
-};
+const MigrationUtils = require('./util/migrationUtils');
 
-const { promisify } = require('util');
-
-exports.up = async function(db) {
-  const createTable = promisify(db.createTable.bind(db));
-
-  await createTable('donation_level',
+exports.up = MigrationUtils.mySqlUp(async function(mySqlUtils) {
+  const id = mySqlUtils.getIdField();
+  await mySqlUtils.createTable('donation_level',
     {
       id,
       name: {
@@ -55,13 +47,11 @@ exports.up = async function(db) {
         //I'll be setting up some extreme validation of the JSON object.  No nested objects, arrays, or functions, input must be an object, and probably whitelisted CSS keys
       },
     });
-};
+});
 
-exports.down = async function(db) {
-  const dropTable = promisify((tableName, callback) => db.dropTable.call(db, tableName, { ifExists: true }, callback));
-
-  await dropTable('donation_level')
-};
+exports.down = MigrationUtils.mySqlDown(async function(mySqlUtils) {
+  await mySqlUtils.dropTable('donation_level')
+});
 
 exports._meta = {
   "version": 1

@@ -14,20 +14,11 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const id = {
-  type: 'int',
-  notNull: true,
-  primaryKey: true,
-  autoIncrement: true,
-};
+const MigrationUtils = require('./util/migrationUtils');
 
-const { promisify, callbackify } = require('util');
-
-exports.up = async function(db) {
-  const createTable = promisify(db.createTable.bind(db));
-  const addIndex = promisify(db.addIndex.bind(db));
-
-  await createTable(
+exports.up = MigrationUtils.mySqlUp(async function(mySqlUtils) {
+  const id = mySqlUtils.getIdField();
+  await mySqlUtils.createTable(
     'job_aggregation',
     {
       id,
@@ -60,14 +51,12 @@ exports.up = async function(db) {
     },
   );
 
-  await addIndex('job_aggregation', 'job_aggregation_index', ['parent_job_id', 'child_job_id'], true);
-};
+  await mySqlUtils.addIndex('job_aggregation', 'job_aggregation_index', ['parent_job_id', 'child_job_id'], true);
+});
 
-exports.down = async function(db) {
-  const dropTable = promisify((tableName, callback) => db.dropTable.call(db, tableName, { ifExists: true }, callback));
-
-  await dropTable('job_aggregation');
-};
+exports.down = MigrationUtils.mySqlDown(async function(mySqlUtils) {
+  await mySqlUtils.dropTable('job_aggregation');
+});
 
 exports._meta = {
   "version": 1
