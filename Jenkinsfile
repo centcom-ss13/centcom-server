@@ -52,7 +52,7 @@ pipeline {
           remote.user = '$serverUser'
 
           sshCommand remote: remote, command: "cd /home/server; node dist/bundle"
-          sshCommand remote: remote, command: "set +e; screen -r -S "centcom_server" -X quit 2>/dev/null; set -e"
+          sshCommand remote: remote, command: "set +e; screen -r -S centcom_server -X quit 2>/dev/null; set -e"
           sshCommand remote: remote, command: "screen -dmS centcom_server bash -c 'cd /home/server \\&\\& node dist/bundle'"
         }
       }
