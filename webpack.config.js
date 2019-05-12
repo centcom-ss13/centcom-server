@@ -3,13 +3,14 @@ var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   mode: 'production',
-  entry: ['@babel/polyfill', './src/index'],
+  entry: './src/index',
   target: 'node',
   externals: [nodeExternals()],
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
+        exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
