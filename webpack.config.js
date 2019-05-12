@@ -14,7 +14,14 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  useBuiltIns: "entry",
+                },
+              ],
+            ],
             plugins: [
               '@babel/plugin-proposal-object-rest-spread',
               '@babel/plugin-transform-runtime',
