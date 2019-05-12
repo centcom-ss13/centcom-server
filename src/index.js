@@ -22,7 +22,14 @@ async function init() {
     host: config.get('apiHost'),
     routes: {
       cors: {
-        origin: [`${config.get('frontEndSSL') ? 'https' : 'http'}://${config.get('frontEndUrl')}${(config.get('frontEndSSL') && (config.get('frontEndPort') === 443)) ? '' : `:${config.get('frontEndPort')}`}`],
+        origin: [`${config.get('frontEndSSL') ? 'https' : 'http'}://${config.get('frontEndUrl')}${
+          ((config.get('frontEndSSL') &&
+          (config.get('frontEndPort') === 443)) ||
+          (!config.get('frontEndSSL') &&
+            (config.get('frontEndPort') === 80))) ?
+          '' :
+          `:${config.get('frontEndPort')}`}`
+        ],
         headers: ["Accept", "Content-Type"],
         additionalHeaders: ["X-Requested-With"],
         credentials: true,

@@ -3,6 +3,7 @@ pipeline {
 
   environment {
       TERM = 'vt100'
+      NODE_ENV = 'cert'
   }
 
   stages {
