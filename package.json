@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.4.4",
     "@hapi/boom": "^7.4.2",
     "@hapi/cookie": "^10.1.0",
     "bcrypt": "^3.0.6",
@@ -36,13 +36,13 @@
     "validator": "^10.11.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
-    "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/polyfill": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
-    "@babel/register": "^7.4.0",
-    "babel-loader": "^8.0.5",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
+    "babel-loader": "^8.0.6",
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-wildcard": "^5.0.0",
     "chai": "^4.2.0",
@@ -50,8 +50,8 @@
     "db-migrate-mysql": "^1.1.10",
     "mocha": "^6.1.4",
     "npm-run-all": "^4.1.5",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2",
     "webpack-node-externals": "^1.7.2"
   }
 }
