@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "npx mocha --recursive",
     "build": "webpack",
     "start": "node ./dist/bundle.js",
     "db": "run-s db:up",
