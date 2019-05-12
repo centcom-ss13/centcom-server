@@ -1,9 +1,10 @@
+def remote = [:]
+remote.name = 'centcom-cert'
+remote.allowAnyHosts = true
+
 pipeline {
   agent any
   stages {
-    def remote = [:]
-    remote.name = 'centcom-cert'
-    remote.allowAnyHosts = true
 
     stage('Install') {
       steps {
