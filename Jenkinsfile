@@ -1,7 +1,7 @@
 def remote = [:]
 remote.name = 'centcom-cert'
 remote.allowAnyHosts = true
-remote.host = '10.132.109.125'
+remote.host = '134.209.42.179'
 remote.user = 'jenkins'
 
 pipeline {
