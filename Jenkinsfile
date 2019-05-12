@@ -1,13 +1,6 @@
-def remote = [:]
-remote.name = 'centcom-cert'
-remote.allowAnyHosts = true
-remote.host = '134.209.42.179'
-remote.user = 'jenkins'
-
 pipeline {
   agent any
   stages {
-
     stage('Install') {
       steps {
         nodejs('main') {
@@ -48,13 +41,11 @@ pipeline {
     stage('Start Server') {
       steps {
         withCredentials([
-          string(credentialsId: '73eb69b5-4e5e-4586-84ae-a3e44760b38c', variable: 'privateKey'),
+          string(credentialsId: 'bc9956d9-35ac-4302-983e-2a602cd4620d', variable: 'serverIp'),
+          string(credentialsId: 'd02f60bc-7c15-44c6-b1e1-470f488ba6bd', variable: 'serverUser'),
         ]) {
-          remote.identity = '$privateKey'
-          
-          sshCommand remote: remote, command: "cd /home/server \\&\\& npm ci \\&\\& npm run build"
-          sshCommand remote: remote, command: "set +e; screen -r -S centcom_server -X quit 2>/dev/null; set -e"
-          sshCommand remote: remote, command: "screen -dmS centcom_server bash -c 'cd /home/server \\&\\& node dist/bundle'"
+          sh 'set +e; ssh $serverUser@$serverIp screen -r -S "centcom_server" -X quit 2>/dev/null;  set -e'
+          sh 'ssh $serverUser@$serverIp screen -dmS centcom_server bash -c \\"cd /home/server \\&\\& npm ci \\&\\& npm run build \\&\\& node dist/bundle \\" '
         }
       }
     }
