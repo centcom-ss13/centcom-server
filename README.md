@@ -12,7 +12,6 @@ Note: This module lists `npm-run-all` as a dev dependency, and uses it for comma
 
 This module includes database configuration and migrations.  Configuration is contained within `/src/config` for the specified `NODE_ENV` environment variable.
 
- - `run-s db` - Run all migrations on the database - requires the database by the name in the config (default `centcom`) to be already created with sufficient user rights.
  - `run-s build` - Build the server into a bundle located at `/dist/bundle.js`
  - `run-s start` - Run the compiled JS bundle
  - `run-s test` - Run the mocha tests
