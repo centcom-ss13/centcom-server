@@ -14,7 +14,8 @@
     "db:up": "npx db-migrate up",
     "db:down": "npx db-migrate down",
     "db:create": "npx db-migrate create",
-    "db:reset": "npx db-migrate reset"
+    "db:reset": "npx db-migrate reset",
+    "publish": "npm publish --access public"
   },
   "author": "",
   "license": "ISC",
