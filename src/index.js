@@ -17,9 +17,11 @@ function addControllers(server) {
 
 async function init() {
 
+  const host = config.get('apiHost');
+
   const server = Hapi.server({
     port: config.get('apiPort'),
-    host: config.get('apiHost'),
+    ...(host && { host }),
     routes: {
       cors: {
         origin: [`${config.get('frontEndSSL') ? 'https' : 'http'}://${config.get('frontEndUrl')}${

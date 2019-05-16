@@ -1,6 +1,6 @@
 {
   "name": "@centcom/server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Back-end for the CentCom SS13 Management Platform",
   "main": "dist/index.js",
   "directories": {
@@ -15,7 +15,7 @@
     "db:down": "npx db-migrate down",
     "db:create": "npx db-migrate create",
     "db:reset": "npx db-migrate reset",
-    "publish": "npm publish --access public"
+    "npm:publish": "npm publish --access public"
   },
   "author": "",
   "license": "ISC",
