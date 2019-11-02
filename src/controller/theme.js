@@ -30,7 +30,7 @@ const createTheme = {
   method: 'POST',
   path: '/theme',
   handler: async function (request, h) {
-    return await ThemeService.createTheme(request.payload);
+    return await ThemeService.createTheme(request.payload.input, request.payload.sender_id);
   },
 };
 

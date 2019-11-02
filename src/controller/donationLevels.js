@@ -33,7 +33,7 @@ const createDonationLevel = {
   method: 'POST',
   path: '/donationLevels',
   handler: async function (request, h) {
-    return await DonationLevelService.createDonationLevel(request.payload);
+    return await DonationLevelService.createDonationLevel(request.payload.input, request.payload.sender_id);
   },
 };
 

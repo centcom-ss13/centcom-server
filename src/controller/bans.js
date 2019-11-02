@@ -33,7 +33,7 @@ const createBan = {
   method: 'POST',
   path: '/bans',
   handler: async function (request, h) {
-    return await BanService.createBan(request.payload);
+    return await BanService.createBan(request.payload.input, request.payload.sender_id);
   },
 };
 

@@ -4,7 +4,7 @@ async function getBans() {
   return await BanRepository.getBans();
 }
 
-async function createBan(input, banInput, sender_id) {
+async function createBan(banInput, issuer_id) {
   const defaults = {
     isJobBan: false,
     isPermanentBan: false,
@@ -16,11 +16,11 @@ async function createBan(input, banInput, sender_id) {
     ...banInput,
   };
 
-  validateBan(hydratedBanInput, sender_id);
+  validateBan(hydratedBanInput, issuer_id);
 
   const databaseObject = {
     ...hydratedBanInput,
-    sender_id,
+    issuer_id,
   };
 
   return await BanRepository.createBan(databaseObject);

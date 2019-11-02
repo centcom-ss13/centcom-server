@@ -38,7 +38,7 @@ const createGroup = {
   method: 'POST',
   path: '/groups',
   handler: async function (request, h) {
-    return await GroupService.createGroup(request.payload);
+    return await GroupService.createGroup(request.payload.input, request.payload.sender_id);
   },
 };
 

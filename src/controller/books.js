@@ -33,7 +33,7 @@ const createBook = {
   method: 'POST',
   path: '/books',
   handler: async function (request, h) {
-    return await BookService.createBook(request.payload);
+    return await BookService.createBook(request.payload.input, request.payload.sender_id);
   },
 };
 
@@ -70,7 +70,7 @@ const createBookCategory = {
   method: 'POST',
   path: '/bookCategories',
   handler: async function (request, h) {
-    return await BookService.createBookCategory(request.payload);
+    return await BookService.createBookCategory(request.payload.input, request.payload.sender_id);
   },
 };
 

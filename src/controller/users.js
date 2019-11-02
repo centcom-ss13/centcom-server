@@ -50,7 +50,7 @@ const createUser = {
   method: 'POST',
   path: '/users',
   handler: async function (request, h) {
-    const decryptedUser = await decryptUserSecrets(request.payload);
+    const decryptedUser = await decryptUserSecrets(request.payload.input, request.payload.sender_id);
 
     return await UserService.createUser(decryptedUser);
   },

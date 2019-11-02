@@ -30,7 +30,7 @@ const createJob = {
   method: 'POST',
   path: '/jobs',
   handler: async function (request, h) {
-    return await JobService.createJob(request.payload);
+    return await JobService.createJob(request.payload.input, request.payload.sender_id);
   },
 };
 

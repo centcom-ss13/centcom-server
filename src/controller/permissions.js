@@ -30,7 +30,7 @@ const createPermission = {
   method: 'POST',
   path: '/permissions',
   handler: async function (request, h) {
-    return await PermissionService.createPermission(request.payload);
+    return await PermissionService.createPermission(request.payload.input, request.payload.sender_id);
   },
 };
 
